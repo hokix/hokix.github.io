@@ -7,3 +7,10 @@ layout: default
 <div class="post">
 {{ content }}
 </div>
+
+<div class="tags">
+tags: 
+{% for tag in page.tags %}
+<em><a href="/tags_index.html#{{tag}}">{{ tag }}</a></em>
+{% endfor %}
+</div>
