@@ -7,7 +7,7 @@ category: stuff
 
 今天决定开始使用github.io + jekyll写技术博客。
 
-![image](/images/singing-in-the-rain.png)
+![image](/images/singing-in-the-rain.jpg)
 
 
 
