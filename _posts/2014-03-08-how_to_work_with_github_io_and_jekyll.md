@@ -31,7 +31,7 @@ tags: GitHub Jekyll
 
 ###2. 使用Jekyll和Markdown
 - Jekyll基本用法  
-将创建好的代码仓库checkout到本地。
+将创建好的代码仓库clone到本地。
 使用Jekyll创建一个新的项目：   
 `jekyll new repo`   
 
