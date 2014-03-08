@@ -3,3 +3,5 @@ markdown: redcarpet
 pygments: true
 timezone: Asia/Shanghai
 encoding: utf-8
+redcarpet:
+    extensions: ["tables"]
