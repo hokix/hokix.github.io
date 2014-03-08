@@ -184,7 +184,8 @@ table {
   border: 1px solid #373737;
   margin-bottom: 20px;
   text-align: left;
-  width: 100%;
+  word-wrap: break-word;
+  word-break: break-all;
  }
 
 th {
@@ -305,7 +306,6 @@ Full-Width Styles
 
 #main_content {
   padding-top: 40px;
-  min-height:400px;
 }
 
 #footer_wrap {
