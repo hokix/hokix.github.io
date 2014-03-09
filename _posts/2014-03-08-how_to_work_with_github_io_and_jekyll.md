@@ -3,7 +3,7 @@ layout: post
 title: "使用GitHub Pages和Jekyll建网站"
 date:   2014-03-08 00:25:09
 categories: GitHub
-tags: GitHub Jekyll
+tags: GitHub Jekyll Markdown
 ---
 
 [GitHub Pages](http://pages.github.com)
@@ -13,7 +13,8 @@ tags: GitHub Jekyll
 
 使用GitHub Pages可以很轻松地为个人、组织或者GitHub项目建一个静态站点。  
 只要注册好GitHub账号，就会自动有与用户名相对应的username.github.io主页了。只不过默认是404错误页面而已。只需要创建一个代码仓库（repo），即可将自己的页面放到GitHub上。  
-当然啦，你还可以[自定义域名](https://help.github.com/articles/setting-up-a-custom-domain-with-pages)。
+当然啦，你还可以[自定义域名](https://help.github.com/articles/setting-up-a-custom-domain-with-pages)。  
+使用Jekyll在GitHub上建网站的基本思路是：使用Markdown语言写网页内容，并上传到GitHub的代码仓库中，GitHub使用Jekyll将Markdown问津啊转换为html，这样网站就可以访问了。
 
 ###1. 环境搭建
 既然网站保存在GitHub上，安装git当然是必要的了。这里我们使用markdown来写网站正文，因此顺便也安装ruby和Jekyll。如果想自己写html，也可以忽略这两个。  
@@ -70,7 +71,7 @@ print "Hello world"
 
 ###参考资料
 - [GitHub Pages帮助](https://help.github.com/categories/20/articles)
-- [jekyll快速入门](http://jekyllrb.com/docs/quickstart/)
+- [Jekyll快速入门](http://jekyllrb.com/docs/quickstart/)
 - [Markdown主页](http://daringfireball.net/projects/markdown/)
 - Mac版Markdown编辑工具：[Mou](http://mouapp.com)
 

@@ -12,7 +12,7 @@ title: Xiao Hui's blog
   <hr/>
   <ul class="posts">
     {% for tag in site.tags %}
-      <li><a name="{{tag | first}}"></a>{{tag | first}} {{tag | last | size}}</li>
+      <li><a name="{{tag | first}}"></a>{{tag | first}} ({{tag | last | size}})</li>
       {% for post in tag.last %}
         <p><span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{post.url}}">{{post.title}}</a></p>
       {% endfor %}
