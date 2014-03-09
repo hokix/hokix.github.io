@@ -14,8 +14,8 @@ with定义中提到的context manager，定义如下：
 
 > A context manager is an object that defines the runtime context to be established when executing a with statement.  
 
-context manager定义了\_\_enter\_\_和\_\_exit\_\_函数，供with使用。contextmanager是python的一种[内置类型](http://docs.python.org/2/library/stdtypes.html#typecontextmanager)，不过context manager也可以理解为为一种协议，只要函数包含了这两个函数即可。因此既可以通过contextlib.contextmanager来生成这两个函数，也可以直接写好这。  
-一个简单使用读取文件的例子：  
+context manager定义了\_\_enter\_\_和\_\_exit\_\_函数，供with使用。contextmanager是python的一种[内置类型](http://docs.python.org/2/library/stdtypes.html#typecontextmanager)，不过context manager也可以理解为为一种协议，只要函数包含了这两个函数即可。因此既可以通过contextlib.contextmanager来生成这两个函数，也可以直接写好。  
+一个简单读取文件的例子：  
 {% highlight python %}
 with open('filename', 'r') as f:
 	print f.readline()
@@ -54,6 +54,7 @@ with的简化执行过程：
 一个使用context manager的例子：
 {% highlight python %}
 class tag:
+	# tag类符合context manager类型的定义
 	def __init__(self, name):
 		self.name = name
 	def __enter__(self):
@@ -99,7 +100,7 @@ with tag("h1") as t:
 
 
 简单地说，yield前的部分作为\_\_enter\_\_，yield后的部分作为\_\_exit\_\_。yield只能有一个值，作为as语句中target\_item的值。  
-使用contextmanager装饰器，在上面的例子中，如果出现出现异常，\_\_exit\_\_并未做任何。一个处理异常的例子:  
+使用contextmanager装饰器，在上面的例子中，如果出现出现异常，\_\_exit\_\_并未做任何处理。一个处理异常的例子:  
 {% highlight python %}
 from contextlib import context manager
 def tag(name):
@@ -153,7 +154,7 @@ with closing(urllib.urlopen('http://www.sogou.com')) as page:
 {% endhighlight %}
 
 ###4. 小结
-- with语句可以简化try...except...finally代码，让代码更简洁，更容易复用。  
+- with语句可以封装try...except...finally代码，让代码更简洁，更容易复用。  
 - contextmanager定义了with语句执行时的上下文。  
 - 要注意异常的处理方式。
 
