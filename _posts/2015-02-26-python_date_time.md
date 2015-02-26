@@ -41,6 +41,8 @@ time模块提供了一系列的时间函数。
 | 时间转换 | strftime | 时间类转换为时间字符串(自定义格式) |
 | 时间转换 | strptime | 时间字符串转换为时间类(自定义格式) |
 
+![image](/images/python-time.png)
+
 其中gmtime、localtime、ctime、asctime、strftime没有给出时间参数时，默认使用当前时区时间。
 
 时间类(struct_time)定义参考[这里](https://docs.python.org/2/library/time.html#time.struct_time)，

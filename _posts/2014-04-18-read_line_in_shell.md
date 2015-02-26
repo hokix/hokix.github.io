@@ -60,6 +60,31 @@ done < filename
 
 当然个人更倾向于使用管道的方法，这样输入就不用局限在使用文件了。
 
+这里还需要注意另外一个问题，输入文件中的tab，变替换成了space：
+
+{% highlight %}
+Input:
+a	b
+c d
+Output:
+a b
+c d
+{% endhighlight %}
+
+原因是shell脚本中有个变量叫IFS(Internal Field Seprator)，内域分隔符，对输入做了替换。IFS定义如下：
+> The shell uses the value stored in IFS, which is the space, tab, and newline characters by default, to delimit words for the read and set commands, when parsing output from command substitution, and when performing variable substitution.
+
+因此需要对代码稍作修改，才能得到正确的输出:
+
+{% highlight bash %}
+IFS=''
+while read line
+do
+	echo $line
+done < filename
+{% endhighlight %}
+
+
 
 
 
