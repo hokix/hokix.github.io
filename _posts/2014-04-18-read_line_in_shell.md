@@ -62,7 +62,7 @@ done < filename
 
 这里还需要注意另外一个问题，输入文件中的tab，变替换成了space：
 
-{% highlight %}
+{% highlight bash %}
 Input:
 a	b
 c d

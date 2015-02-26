@@ -97,7 +97,6 @@ img {
   padding: 5px;
   margin: 10px 0 10px 0;
   border: 1px solid #ebebeb;
-  width: 100%;
 
   box-shadow: 0 0 5px #ebebeb;
   -webkit-box-shadow: 0 0 5px #ebebeb;
@@ -107,8 +106,8 @@ img {
 }
 
 p img {
-  display: inline;
-  margin: 0;
+  display: block;
+  margin: 0 auto;
   padding: 0;
   vertical-align: middle;
   text-align: center;
