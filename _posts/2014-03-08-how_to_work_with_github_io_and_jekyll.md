@@ -7,8 +7,9 @@ tags: GitHub Jekyll Markdown
 ---
 
 [GitHub Pages](http://pages.github.com)
-是GitHub提供的免费公共站点服务。以下是GitHub的官方简介：  
-> ####Websites for you and your projects.  
+是GitHub提供的免费公共站点服务。以下是GitHub的官方简介：
+
+> #### Websites for you and your projects.  
 > Hosted directly from your GitHub repository. Just edit, push, and your changes are live.  
 
 使用GitHub Pages可以很轻松地为个人、组织或者GitHub项目建一个静态站点。  
