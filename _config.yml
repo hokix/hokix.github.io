@@ -2,14 +2,13 @@ name: Xiao Hui
 motto: I'm going to succeed because I'm crazy enough to think I can.
 github_username: hokix
 title: Xiao Hui's Blog
+email: hokix@live.com
 
 # Where things are
 source:      .
 destination: ./_site
-plugins:     ./_plugins
-layouts:     ./_layouts
-data_source: ./_data
-collections: null
+layouts_dir:     ./_layouts
+includes_dir: ./_includes
 
 # Handling Reading
 safe:         false
