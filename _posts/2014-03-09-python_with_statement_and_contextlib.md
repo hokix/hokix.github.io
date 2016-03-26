@@ -30,7 +30,8 @@ finally:
 	f.close()
 {% endhighlight %}
 
-###1. with的基本语法和执行过程
+## with的基本语法和执行过程
+
 with的基本语法：  
 {% highlight python %}
 with with_item as target_item:
@@ -50,7 +51,8 @@ with的简化执行过程：
 
 另外需要注意的一点是，代码抛出异常时，\_\_exit\_\_函数如果已经处理了异常，则可以返回True值；如果需要外部代码来处理该异常，则\_\_exit\_\_函数不需要做任何工作。
   
-###2. context manager
+## context manager
+
 一个使用context manager的例子：
 {% highlight python %}
 class tag:
@@ -77,14 +79,16 @@ with tag("h1") as t:
 	</h1>  
 这段代码等价于下文3.1.中使用contextlib.contextmanager的代码。
 
-###3. contextlib
+## contextlib
+
 在with定义里提到的context manager在contextlib中，contextlib为with一共提供了一个装饰器和两个函数：  
 
     contextlib.contextmanager  
     contextlib.nested  
     contextlib.closing  
 
-####3.1. contextlib.contextmanager
+### contextlib.contextmanager
+
 一个装饰器，利用生成器为函数提供\_\_enter\_\_和\_\_exit\_\_函数。例如：
 {% highlight python %}
 from contextlib import contextmanager
@@ -121,7 +125,8 @@ with tag("h1") as t:
 	cannot concatenate 'str' and 'int' objects
 	</h1>
 
-####3.2. contextlib.nested  
+### contextlib.nested
+
 用来合并多个context manager，从而避免嵌套多层with语句。但其实从2.7版本以后，with语法已经原生支持使用多个context manager。因此嵌套with有以下三个版本：  
 
 - 最原始的版本：
@@ -142,7 +147,8 @@ with A() as a, B() as b:
 	do_something()
 {% endhighlight %}
 
-####3.3. contextlib.closing
+### contextlib.closing
+
 在退出时调用close函数，最常见的例子：
 {% highlight python %}
 from contextlib import closing
@@ -153,13 +159,15 @@ with closing(urllib.urlopen('http://www.sogou.com')) as page:
 		print line
 {% endhighlight %}
 
-###4. 小结
+## 小结
+
 - with语句可以封装try...except...finally代码，让代码更简洁，更容易复用。  
 - contextmanager定义了with语句执行时的上下文。  
 - 要注意异常的处理方式。
 
 
 ###参考资料
+
 - Python文档：[The with statement](http://docs.python.org/2/reference/compound_stmts.html#with)
 - Python文档：[With statement Context Managers](http://docs.python.org/2/reference/datamodel.html#context-managers)
 - Python文档：[contextlib — Utilities for with-statement contexts](http://docs.python.org/2/library/contextlib.html)

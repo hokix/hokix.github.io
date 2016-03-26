@@ -17,7 +17,8 @@ tags: GitHub Jekyll Markdown
 当然啦，你还可以[自定义域名](https://help.github.com/articles/setting-up-a-custom-domain-with-pages)。  
 使用Jekyll在GitHub上建网站的基本思路是：使用Markdown语言写网页内容，并上传到GitHub的代码仓库中，GitHub使用Jekyll将Markdown问津啊转换为html，这样网站就可以访问了。
 
-###1. 环境搭建
+## 环境搭建
+
 既然网站保存在GitHub上，安装git当然是必要的了。这里我们使用markdown来写网站正文，因此顺便也安装ruby和Jekyll。如果想自己写html，也可以忽略这两个。  
 
 - 安装git，各种[版本](https://help.github.com/articles/set-up-git)的都木有问题。   
@@ -31,7 +32,8 @@ tags: GitHub Jekyll Markdown
 | username.github.io | username.github.io | master |
 | username.github.io/project | project | gh-pages |
 
-###2. 使用Jekyll和Markdown
+## 使用Jekyll和Markdown
+
 - Jekyll基本用法  
 将创建好的代码仓库clone到本地。
 使用Jekyll创建一个新的项目：   
@@ -63,14 +65,17 @@ Markdown语言通过解析器转换为html，Markdown解析器有很多，Jekyll
 print "Hello world"
 {% endhighlight %}
 
-###3. 提交代码
+## 提交代码
+
 站点测试好以后，就可以提交到GitHub上了。只需稍等片刻，即可在github.io上访问到刚才上传的页面了。  
 *注意：使用Jekyll需要在.gitignore文件中加入_site，避免将本地的站点文件上传到了GitHub上。*  
 
-###4. 小结
+## 小结
+
 在GitHub Pages上建网站虽然看起来是个挺繁琐的过程，但其实一旦把前期的准备搞定了，后面的工作就很轻松了。
 
-###参考资料
+## 参考资料
+
 - [GitHub Pages帮助](https://help.github.com/categories/20/articles)
 - [Jekyll快速入门](http://jekyllrb.com/docs/quickstart/)
 - [Markdown主页](http://daringfireball.net/projects/markdown/)

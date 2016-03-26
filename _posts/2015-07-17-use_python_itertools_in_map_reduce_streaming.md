@@ -94,7 +94,8 @@ if __name__ == '__main__':
     main()
 {% endhighlight %}
 
-###参考资料
+## 参考资料
+
 - [Writing an Hadoop MapReduce Program in Python](http://www.michael-noll.com/tutorials/writing-an-hadoop-mapreduce-program-in-python/)
 
 

@@ -9,7 +9,8 @@ tags: python date time datetime
 python内置的时间相关模块有time、datetime、calendar等，这里总结一下。
 
 
-###1. 相关术语
+## 相关术语
+
 时间戳：timestamp，Unix时间戳，POSIX时间戳。从Epoch（1970-01-01 00:00:00 UTC）起经过的秒数，可以是整数或者浮点数。
 
 UTC：Coordinated Universal Time，世界统一时间，世界标准时间，世界协调时间。全世界分为24个时区，中国的UTC时差为+8小时，记做UTC+8。
@@ -26,7 +27,8 @@ CST：有多重含义
 * Cuba Standard Time UTC-5:00
 
 
-###2. time
+## time
+
 time模块提供了一系列的时间函数。
 
 | 函数类型 | 函数名 | 说明 |
@@ -49,7 +51,8 @@ time模块提供了一系列的时间函数。
 时间字符串自定义格式参考[这里](https://docs.python.org/2/library/time.html#time.strftime)。
 
 
-###参考资料
+## 参考资料
+
 - Python文档：[time](https://docs.python.org/2/library/time.html)
 - Python文档：[datetime](https://docs.python.org/2/library/datetime.html)
 - Python文档：[calendar](https://docs.python.org/2/library/calendar.html)

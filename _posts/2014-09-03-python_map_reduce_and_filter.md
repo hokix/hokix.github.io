@@ -9,7 +9,8 @@ tags: python map reduce filter
 python内置了三个非常棒的函数，map、reduce和filter，均用于处理list、tuple和str等可以使用迭代器的数据类型。
 
 
-###1. map函数
+## map函数
+
 map可以根据提供的函数function，顺序处理参数中的sequence。map定义如下：
 > map(function, sequence\[, sequence, ...\]) -> list
     
@@ -50,7 +51,8 @@ map(None, l, m)
 [(1, 0), (3, 2), (5, 4), (7, 6), (9, 8)]
 {% endhighlight %}
 
-###2. reduce函数
+## reduce函数
+
 reduce可以根据提供的函数function，顺序处理参数中的sequence，与map不同的是function每次的输入为上次的结果和下一个元素。默认开始时处理第一个和第二个元素，如果在提供了initial的情况下，开始处理initial和第一个元素。reduce要求function必须接受2个参数，而且reduce不允许输入sequence为空，否则会抛出TypeError异常。reduce定义如下：
 > reduce(function, sequence[, initial]) -> value
 > 
@@ -68,7 +70,8 @@ reduce(add, l, 100)
 125
 {% endhighlight %}
 
-###3. filter函数
+## filter函数
+
 filter可以根据提供的函数function，顺序处理参数中的sequence，并返回function返回True的sequence。让输入sequence为tuple或string时，返回的数据类型仍然为tuple或string。filter定义如下：
 
 > filter(function or None, sequence) -> list, tuple, or string
@@ -83,5 +86,6 @@ filter(lambda x: x % 2, l)
 [1, 3, 5]
 {% endhighlight %}
 
-###参考资料
+## 参考资料
+
 - Python文档：[Build-in Functions](https://docs.python.org/2.7/library/functions.html)
