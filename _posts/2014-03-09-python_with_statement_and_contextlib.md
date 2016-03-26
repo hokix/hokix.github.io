@@ -166,7 +166,7 @@ with closing(urllib.urlopen('http://www.sogou.com')) as page:
 - 要注意异常的处理方式。
 
 
-###参考资料
+## 参考资料
 
 - Python文档：[The with statement](http://docs.python.org/2/reference/compound_stmts.html#with)
 - Python文档：[With statement Context Managers](http://docs.python.org/2/reference/datamodel.html#context-managers)
