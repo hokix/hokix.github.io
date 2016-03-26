@@ -14,10 +14,10 @@ mapper.py
 #!/usr/bin/env python
 import sys
 def main(separater='\t'):
-	for line in sys.stdin:
-		for words in line.strip().split():
-			for word in words:
-				print '%s\t%s' % (word, 1)
+    for line in sys.stdin:
+        for words in line.strip().split():
+            for word in words:
+                print '%s\t%s' % (word, 1)
 
 if __name__ == '__main__':
 	main()
@@ -30,17 +30,17 @@ reducer.py
 import sys
 last_key = ''
 def main(separater='\t'):
-	counts = 0
-	for line in sys.stdin:
-		word, count = line.strip().split(separater)
-		if last_word == word:
-			counts += int(count)
-		else:
-			print '%s\t%d' % (word, counts)
-			count = 0
-		last_word = word
-	else:
-		print '%s\t%d' % (word, counts)
+    counts = 0
+    for line in sys.stdin:
+        word, count = line.strip().split(separater)
+        if last_word == word:
+            counts += int(count)
+        else:
+            print '%s\t%d' % (word, counts)
+            count = 0
+        last_word = word
+    else:
+        print '%s\t%d' % (word, counts)
 
 if __name__ == '__main__':
 	main()
