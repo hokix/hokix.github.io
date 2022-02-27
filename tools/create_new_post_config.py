@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import sys
 config = {
-    "post_path" : "../_posts/",
+    "post_path" : f"{sys.path[0]}/../_posts/",
 }
