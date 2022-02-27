@@ -2,3 +2,6 @@ _site
 *.pyc
 .*.swp
 tags
+.jekyll-cache
+.sass-cache
+Gemfile.lock
