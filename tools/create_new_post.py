@@ -6,7 +6,7 @@ from create_new_post_config import config
 
 def main():
     if len(sys.argv) != 2:
-        print "Usage: python create_new_post.py 'title'"
+        print("Usage: python create_new_post.py 'title'")
         return
     title = sys.argv[1]
     now = datetime.datetime.now().strftime("%Y-%m-%d")
