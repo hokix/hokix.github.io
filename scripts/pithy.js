@@ -11,9 +11,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     window.addEventListener('scroll', function() {
         if (window.scrollY > 300) {
-            gotop.style.opacity = '1';
+            gotop.classList.add('visible');
         } else {
-            gotop.style.opacity = '0';
+            gotop.classList.remove('visible');
         }
     });
 });

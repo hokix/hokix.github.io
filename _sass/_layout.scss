@@ -202,6 +202,7 @@ li {
     pointer-events: none;
 }
 
-#gotop[style*="opacity: 1"] {
+#gotop.visible {
+    opacity: 1;
     pointer-events: auto;
 }
