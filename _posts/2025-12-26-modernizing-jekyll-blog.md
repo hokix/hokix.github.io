@@ -76,8 +76,9 @@ After: **0.375 seconds** per build ⚡️
 
 ## Repository Stats
 
-- **Files changed**: 3 (.gitignore, Gemfile, _config.yml)
-- **New files**: 2 (.github/workflows/jekyll.yml, .github/dependabot.yml)
+- **Files changed**: 6 (3 modified, 3 new)
+- **Modified files**: .gitignore, Gemfile, _config.yml
+- **New files**: .github/workflows/jekyll.yml, .github/dependabot.yml, _posts/2025-12-26-modernizing-jekyll-blog.md
 - **Lines removed**: 21 (mostly deprecated config)
 - **Lines added**: 19 (mostly documentation and new features)
 
