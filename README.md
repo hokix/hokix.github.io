@@ -1,6 +1,6 @@
 # Xiao Hui's Blog
 
-> *"I'm going to succeed because I'm crazy enough to think I can."*
+> _"I'm going to succeed because I'm crazy enough to think I can."_
 
 A personal technical blog powered by Jekyll and GitHub Pages, featuring articles on Python, Linux, shell scripting, and software development.
 
@@ -15,6 +15,7 @@ A personal technical blog powered by Jekyll and GitHub Pages, featuring articles
 ## 📝 About
 
 This blog contains technical articles covering:
+
 - Python programming (map/reduce, datetime, context managers, itertools)
 - Linux and shell scripting
 - Build tools and cross-compilation (FFmpeg, Google CPU Profiler)
@@ -22,7 +23,7 @@ This blog contains technical articles covering:
 
 ## 🚀 Tech Stack
 
-- **Static Site Generator**: Jekyll 3.9.5
+- **Static Site Generator**: Jekyll 4.4.1
 - **Theme**: [jekyll-theme-cayman](https://github.com/pages-themes/cayman)
 - **Hosting**: GitHub Pages
 - **CI/CD**: GitHub Actions (automated deployment)
@@ -32,10 +33,12 @@ This blog contains technical articles covering:
 ## 🛠️ Local Development
 
 ### Prerequisites
-- Ruby 2.6+ (Ruby 3.1+ recommended for Jekyll 4.x)
+
+- Ruby 3.1+ (Ruby 3.4+ recommended)
 - Bundler
 
 ### Setup
+
 ```bash
 # Clone the repository
 git clone https://github.com/hokix/hokix.github.io.git
@@ -51,6 +54,7 @@ bundle exec jekyll serve
 ```
 
 ### Create a New Post
+
 ```bash
 # Create a new file in _posts/ with the format:
 # YYYY-MM-DD-title-with-dashes.md
@@ -99,6 +103,7 @@ This blog uses **GitHub Actions** for automatic deployment:
 ## 🔧 Configuration
 
 Key settings in `_config.yml`:
+
 - **Timezone**: Asia/Shanghai
 - **Permalink**: `/:year/:month/:day/:title/`
 - **Plugins**: jekyll-sitemap (for SEO)
@@ -107,7 +112,8 @@ Key settings in `_config.yml`:
 ## 📦 Dependencies
 
 Managed via Bundler. Key gems:
-- `jekyll` (~> 3.9.5) - Static site generator
+
+- `jekyll` (~> 4.4.1) - Static site generator
 - `jekyll-sitemap` - Automatic sitemap generation
 - `rouge` - Syntax highlighting
 - `kramdown-parser-gfm` - GitHub Flavored Markdown
@@ -129,7 +135,3 @@ Content is © Xiao Hui. Code/configuration is available for reference.
 
 - **Email**: hokix@live.com
 - **GitHub**: [@hokix](https://github.com/hokix)
-
----
-
-[![GitHub Stats](https://github-readme-stats.vercel.app/api?username=hokix&show_icons=true&theme=default)](https://github.com/hokix)
