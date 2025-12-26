@@ -5,7 +5,7 @@
 A personal technical blog powered by Jekyll and GitHub Pages, featuring articles on Python, Linux, shell scripting, and software development.
 
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-success)](https://hokix.github.io)
-[![Jekyll](https://img.shields.io/badge/Jekyll-3.9.5-red)](https://jekyllrb.com/)
+[![Jekyll](https://img.shields.io/badge/Jekyll-4.4.1-red)](https://jekyllrb.com/)
 [![Deploy Status](https://github.com/hokix/hokix.github.io/actions/workflows/jekyll.yml/badge.svg)](https://github.com/hokix/hokix.github.io/actions/workflows/jekyll.yml)
 
 ## 🌐 Visit
