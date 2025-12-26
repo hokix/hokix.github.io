@@ -16,6 +16,11 @@ gem "rouge"
 # Utilities
 gem "jekyll-watch"
 gem "jekyll-sitemap"
+gem "jekyll-feed"
+gem "jekyll-paginate-v2"
+gem "jekyll-archives"
+gem "jekyll-redirect-from"
+gem "jekyll-compose"
 
 # Theme
 gem "jekyll-theme-cayman"
