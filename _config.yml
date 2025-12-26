@@ -56,4 +56,8 @@ kramdown:
     toc_levels:     1..6
     smart_quotes:   lsquo,rsquo,ldquo,rdquo
 
+# Sass/SCSS
+sass:
+  style: compressed
+
 theme: jekyll-theme-cayman

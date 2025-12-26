@@ -1,18 +1,20 @@
-$(function(){
-    $("#gotop").click(function(){
-        jQuery("html,body").animate({
-            scrollTop:0
-        }, 500);
-    });
-    $(window).load(function() {
-		$('#gotop').hide();
-    })
+// Vanilla JavaScript - no jQuery needed
+document.addEventListener('DOMContentLoaded', function() {
+    const gotop = document.getElementById('gotop');
     
-    $(window).scroll(function() {
-        if ( $(this).scrollTop() > 300){
-            $('#gotop').fadeIn("fast");
+    gotop.addEventListener('click', function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    
+    gotop.style.display = 'none';
+    
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 300) {
+            gotop.style.display = 'block';
+            gotop.style.opacity = '1';
         } else {
-            $('#gotop').stop().fadeOut("fast");
+            gotop.style.opacity = '0';
+            setTimeout(() => { if (window.scrollY <= 300) gotop.style.display = 'none'; }, 200);
         }
     });
 });
