@@ -2,19 +2,25 @@
 document.addEventListener('DOMContentLoaded', function() {
     const gotop = document.getElementById('gotop');
     
+    // Add null check to prevent runtime errors
+    if (!gotop) return;
+    
     gotop.addEventListener('click', function() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
     
-    gotop.style.display = 'none';
+    let hideTimeout;
     
     window.addEventListener('scroll', function() {
         if (window.scrollY > 300) {
-            gotop.style.display = 'block';
+            // Clear any pending hide timeout
+            if (hideTimeout) {
+                clearTimeout(hideTimeout);
+                hideTimeout = null;
+            }
             gotop.style.opacity = '1';
         } else {
             gotop.style.opacity = '0';
-            setTimeout(() => { if (window.scrollY <= 300) gotop.style.display = 'none'; }, 200);
         }
     });
 });

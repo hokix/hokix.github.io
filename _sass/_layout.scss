@@ -196,6 +196,12 @@ li {
     background: #515865;
     color: white;
     cursor: pointer;
+    display: block;
     opacity: 0;
     transition: opacity 0.2s ease-in-out;
+    pointer-events: none;
+}
+
+#gotop[style*="opacity: 1"] {
+    pointer-events: auto;
 }
