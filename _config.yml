@@ -28,6 +28,25 @@ unpublished: false
 whitelist: []
 plugins:
   - jekyll-sitemap
+  - jekyll-feed
+  - jekyll-paginate-v2
+  - jekyll-archives
+  - jekyll-redirect-from
+
+# Pagination
+pagination:
+  enabled: true
+  per_page: 10
+  permalink: '/page/:num/'
+  sort_reverse: true
+
+# Archives
+jekyll-archives:
+  enabled:
+    - categories
+  layout: archive
+  permalinks:
+    category: '/category/:name/'
 
 # Conversion
 markdown:    kramdown

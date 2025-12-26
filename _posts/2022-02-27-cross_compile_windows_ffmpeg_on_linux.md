@@ -2,7 +2,7 @@
 layout: post
 title: 交叉编译windows版ffmpeg
 date: 2022-02-27 11:31:47
-category: linux windows
+categories: [linux, windows]
 tags: ffmpeg
 ---
 
