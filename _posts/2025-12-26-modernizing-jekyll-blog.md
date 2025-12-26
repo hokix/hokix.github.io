@@ -72,7 +72,7 @@ To upgrade later:
 ## Build Performance
 
 Before: Manual builds, no CI  
-After: **0.375 seconds** per build ⚡️
+After: **0.312 seconds** per build ⚡️
 
 ## Repository Stats
 
