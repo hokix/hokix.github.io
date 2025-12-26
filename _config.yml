@@ -13,7 +13,7 @@ includes_dir: ./_includes
 # Handling Reading
 safe:         false
 include:      [".htaccess"]
-exclude:      []
+exclude:      ["vendor/", ".bundle/", "Gemfile", "Gemfile.lock", "node_modules/"]
 keep_files:   [".git", ".svn"]
 encoding:     "utf-8"
 markdown_ext: "markdown,mkdown,mkdn,mkd,md"
@@ -26,48 +26,34 @@ unpublished: false
 
 # Plugins
 whitelist: []
-plugins:   []
+plugins:
+  - jekyll-sitemap
 
 # Conversion
 markdown:    kramdown
 highlighter: rouge
-lsi:         false
 excerpt_separator: "\n\n"
 
 # Serving
-detach:  false
 port:    4000
 host:    127.0.0.1
 baseurl: "" # does not include hostname
 
 # Outputting
-permalink:     date
+permalink:     /:year/:month/:day/:title/
 paginate_path: /page:num
 timezone: Asia/Shanghai
 
-quiet:    false
 defaults: []
 
 # Markdown Processors
-rdiscount:
-  extensions: []
-
 kramdown:
-  syntax_highlighter: coderay
+  syntax_highlighter: rouge
   syntax_highlighter_opts:
     auto_ids:       true
     footnote_nr:    1
     entity_output:  as_char
     toc_levels:     1..6
     smart_quotes:   lsquo,rsquo,ldquo,rdquo
-    enable_coderay: false
-
-    coderay:
-      wrap:              div
-      line_numbers:      inline
-      line_number_start: 1
-      tab_width:         2
-      bold_every:        10
-      css:               style
 
 theme: jekyll-theme-cayman
