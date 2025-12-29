@@ -4,28 +4,10 @@ github_username: hokix
 title: Xiao Hui's Blog
 email: hokix@live.com
 
-# Where things are
-source:      .
-destination: ./_site
-layouts_dir:     ./_layouts
-includes_dir: ./_includes
-
-# Handling Reading
-safe:         false
-include:      [".htaccess"]
-exclude:      ["vendor/", ".bundle/", "Gemfile", "Gemfile.lock", "node_modules/"]
-keep_files:   [".git", ".svn"]
-encoding:     "utf-8"
-markdown_ext: "markdown,mkdown,mkdn,mkd,md"
-
-# Filtering Content
-show_drafts: null
-limit_posts: 0
-future:      true
-unpublished: false
+# Build settings
+exclude: ["vendor/", ".bundle/", "Gemfile", "Gemfile.lock", "node_modules/"]
 
 # Plugins
-whitelist: []
 plugins:
   - jekyll-sitemap
   - jekyll-feed
@@ -49,21 +31,12 @@ jekyll-archives:
     category: '/category/:name/'
 
 # Conversion
-markdown:    kramdown
+markdown: kramdown
 highlighter: rouge
-excerpt_separator: "\n\n"
-
-# Serving
-port:    4000
-host:    127.0.0.1
-baseurl: "" # does not include hostname
 
 # Outputting
-permalink:     /:year/:month/:day/:title/
-paginate_path: /page:num
+permalink: /:year/:month/:day/:title/
 timezone: Asia/Shanghai
-
-defaults: []
 
 # Markdown Processors
 kramdown:
@@ -78,5 +51,6 @@ kramdown:
 # Sass/SCSS
 sass:
   style: compressed
+  quiet_deps: true
 
 theme: jekyll-theme-cayman
