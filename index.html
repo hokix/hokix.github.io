@@ -57,8 +57,6 @@ pagination:
     // Create loading indicator
     const loader = document.createElement('div');
     loader.className = 'loading-indicator';
-    loader.style.textAlign = 'center';
-    loader.style.padding = '20px';
     loader.style.display = 'none';
     loader.innerHTML = '<p>Loading more posts...</p>';
     document.querySelector('.home').appendChild(loader);
@@ -70,10 +68,15 @@ pagination:
       loader.style.display = 'block';
       
       const nextPage = currentPage + 1;
-      const nextUrl = nextPage === 2 ? '/page/2/' : `/page/${nextPage}/`;
+      const nextUrl = `{{ site.baseurl }}/page/${nextPage}/`;
       
       fetch(nextUrl)
-        .then(response => response.text())
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.text();
+        })
         .then(html => {
           const parser = new DOMParser();
           const doc = parser.parseFromString(html, 'text/html');
@@ -89,7 +92,7 @@ pagination:
         })
         .catch(error => {
           console.error('Error loading next page:', error);
-          loader.innerHTML = '<p>Error loading posts. <a href="' + nextUrl + '">Click here to continue</a></p>';
+          loader.innerHTML = `<p>Error loading posts. <a href="${nextUrl}">Click here to continue</a></p>`;
           loading = false;
         });
     }
