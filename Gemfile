@@ -9,6 +9,9 @@ gem "webrick"
 gem "tzinfo"
 gem "tzinfo-data"
 
+# Ruby standard library
+gem "logger"
+
 # Markdown and syntax highlighting
 gem "kramdown-parser-gfm"
 gem "rouge"

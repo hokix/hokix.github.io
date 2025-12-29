@@ -34,5 +34,90 @@ pagination:
       <a href="{{ paginator.next_page_path | prepend: site.baseurl }}">Next »</a>
     {% endif %}
   </div>
+  
+  <script>
+  // Infinite scroll implementation
+  (function() {
+    'use strict';
+    
+    let loading = false;
+    let currentPage = {{ paginator.page }};
+    const totalPages = {{ paginator.total_pages }};
+    
+    if (totalPages <= 1) return; // No pagination needed
+    
+    const postList = document.querySelector('.post-list');
+    const pagination = document.querySelector('.pagination');
+    
+    // Hide original pagination controls
+    if (pagination) {
+      pagination.style.display = 'none';
+    }
+    
+    // Create loading indicator
+    const loader = document.createElement('div');
+    loader.className = 'loading-indicator';
+    loader.style.textAlign = 'center';
+    loader.style.padding = '20px';
+    loader.style.display = 'none';
+    loader.innerHTML = '<p>Loading more posts...</p>';
+    document.querySelector('.home').appendChild(loader);
+    
+    function loadNextPage() {
+      if (loading || currentPage >= totalPages) return;
+      
+      loading = true;
+      loader.style.display = 'block';
+      
+      const nextPage = currentPage + 1;
+      const nextUrl = nextPage === 2 ? '/page/2/' : `/page/${nextPage}/`;
+      
+      fetch(nextUrl)
+        .then(response => response.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          const newPosts = doc.querySelectorAll('.post-list > li');
+          
+          newPosts.forEach(post => {
+            postList.appendChild(post.cloneNode(true));
+          });
+          
+          currentPage = nextPage;
+          loader.style.display = 'none';
+          loading = false;
+        })
+        .catch(error => {
+          console.error('Error loading next page:', error);
+          loader.innerHTML = '<p>Error loading posts. <a href="' + nextUrl + '">Click here to continue</a></p>';
+          loading = false;
+        });
+    }
+    
+    // Detect when user scrolls near bottom
+    function checkScroll() {
+      if (loading) return;
+      
+      const scrollHeight = document.documentElement.scrollHeight;
+      const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+      const clientHeight = document.documentElement.clientHeight;
+      
+      // Trigger when user is 300px from bottom
+      if (scrollHeight - scrollTop - clientHeight < 300) {
+        loadNextPage();
+      }
+    }
+    
+    // Throttle scroll events
+    let scrollTimeout;
+    window.addEventListener('scroll', function() {
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
+      scrollTimeout = setTimeout(checkScroll, 100);
+    });
+    
+  })();
+  </script>
   {% endif %}
 </div>
