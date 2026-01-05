@@ -4,6 +4,7 @@ title: Creating a Custom Homebrew Tap for Legacy Packages
 date: 2026-01-05 07:10:00
 category: homebrew
 tags: homebrew macos package-management ai-generated
+excerpt: "When Homebrew Core drops support for older versions of packages, you're left with few options: upgrade your workflow, build from source manually, or maintain your own tap. This guide shows how to create a custom Homebrew tap for legacy packages."
 ---
 
 > **⚠️ AI-GENERATED CONTENT**  

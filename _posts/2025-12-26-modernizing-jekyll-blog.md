@@ -4,6 +4,7 @@ title: Modernizing This Jekyll Blog in 2025
 date: 2025-12-26 16:04:00
 category: jekyll
 tags: jekyll github-pages ci-cd ai-generated
+excerpt: "After nearly two years since the last update, I've modernized this blog's infrastructure. Here's what changed and why."
 ---
 
 > **⚠️ AI-GENERATED CONTENT**  
