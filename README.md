@@ -90,11 +90,29 @@ EOF
 
 ## 🔄 Deployment
 
-This blog is deployed to GitHub Pages from the **gh-pages branch**:
+This blog is deployed to GitHub Pages from the **gh-pages branch**.
 
-1. Build the site locally: `bundle exec jekyll build`
-2. Push the built site to the `gh-pages` branch
-3. GitHub Pages serves the site automatically
+### Quick Deploy Script
+
+```bash
+# Build and deploy to gh-pages branch
+bundle exec jekyll build
+git add _site -f
+git commit -m "Build site $(date +%Y-%m-%d)"
+git subtree push --prefix _site origin gh-pages
+```
+
+Or use the gh-pages npm tool:
+
+```bash
+# Install gh-pages globally (one time)
+npm install -g gh-pages
+
+# Build and deploy
+bundle exec jekyll build && gh-pages -d _site
+```
+
+### Configuration
 
 Configure in repository Settings → Pages → Source → Deploy from branch → `gh-pages`
 
