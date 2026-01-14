@@ -92,24 +92,26 @@ EOF
 
 This blog is deployed to GitHub Pages from the **gh-pages branch**.
 
-### Quick Deploy Script
+### Deploy with script
 
 ```bash
-# Build and deploy to gh-pages branch
-bundle exec jekyll build
-git add _site -f
-git commit -m "Build site $(date +%Y-%m-%d)"
-git subtree push --prefix _site origin gh-pages
+# Run the deployment script
+./deploy.sh
 ```
 
-Or use the gh-pages npm tool:
+This builds the site and pushes it to the `gh-pages` branch automatically.
+
+### Manual deployment
 
 ```bash
-# Install gh-pages globally (one time)
-npm install -g gh-pages
-
-# Build and deploy
-bundle exec jekyll build && gh-pages -d _site
+# Build and deploy manually
+bundle exec jekyll build
+cd _site
+git init
+git add -A
+git commit -m "Deploy site"
+git branch -M gh-pages
+git push -f origin gh-pages
 ```
 
 ### Configuration
