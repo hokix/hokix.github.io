@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>    
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width initial-scale=1">
+
+  <title>Shell学习小结（1）</title>
+  <meta name="description" content="shell中有很多特殊符号，:不太常见，却很好用，$则是变化万千。1. :">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="/2014/05/31/learning_shell_01/">
+  <link rel="alternate" type="application/atom+xml" title="Xiao Hui's Blog" href="/feed.xml" />
+  <script src="/scripts/pithy.js" defer></script>
+</head>
+
+
+  <body>
+    <header class="header">
+	<div class="header-container">
+		<div class="nav">
+			
+				<li>
+					<a href="/index.html">home</a>
+				</li>			
+			
+			
+				<li>
+					<a href="/archive/">archive</a>
+				</li>			
+			
+			
+				<li>
+					<a href="/category/">category</a>
+				</li>			
+			
+			
+				<li>
+					<a href="/about/">about</a>
+				</li>			
+			
+		</div>
+		<div class="description"> I'm going to succeed because I'm crazy enough to think I can. </div>		
+		<ul class="social-links">
+			<li>
+				<a href="https://github.com/hokix" title="Github">
+					<img width="19px" height="19px" src="/images/github.png"/>
+				</a>
+			</li>
+			<li>
+				<a href="/feed.xml" title="RSS">
+					<img width="19px" height="19px" src="/images/rss.png"/>
+				</a>
+			</li>
+		</ul>		
+	</div>
+</header>
+
+    <br>
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+  <br>
+  <header class="post-header">
+    <h1 class="post-title">Shell学习小结（1）</h1>
+    <p class="post-meta">May 31, 2014</p>
+  </header>
+
+  <article class="post-content">
+    <p>shell中有很多特殊符号，<code class="language-plaintext highlighter-rouge">:</code>不太常见，却很好用，<code class="language-plaintext highlighter-rouge">$</code>则是变化万千。</p>
+<h2 id="1-">1. :</h2>
+
+<p><code class="language-plaintext highlighter-rouge">:</code>是一个空命令。<code class="language-plaintext highlighter-rouge">:</code>什么也不干，起返回值是0，因此也可以看做与<code class="language-plaintext highlighter-rouge">true</code>作用相同。</p>
+
+<p>死循环：</p>
+
+<figure class="highlight"><pre><code class="language-sh" data-lang="sh"><span class="k">while</span> :
+<span class="k">do
+	</span><span class="nb">echo</span> <span class="s1">'hi'</span>
+<span class="k">done</span></code></pre></figure>
+
+<p>if/then占位符：</p>
+
+<figure class="highlight"><pre><code class="language-sh" data-lang="sh"><span class="k">if </span>condition
+<span class="k">then</span> :
+<span class="k">else
+	</span><span class="nb">echo</span> <span class="s1">'hi'</span>
+<span class="k">fi</span></code></pre></figure>
+
+<p>用来替代<code class="language-plaintext highlighter-rouge">cat /dev/null &gt; data</code>：</p>
+
+<figure class="highlight"><pre><code class="language-sh" data-lang="sh">: <span class="o">&gt;</span> data</code></pre></figure>
+
+<h2 id="2-">2. $</h2>
+
+<p>与<code class="language-plaintext highlighter-rouge">:</code>不同，<code class="language-plaintext highlighter-rouge">$</code>是一个很常见的符号，与其他符号组号有多种含义。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>符号</th>
+      <th>含义</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$</td>
+      <td>变量替换</td>
+    </tr>
+    <tr>
+      <td>$</td>
+      <td>正则行结束符</td>
+    </tr>
+    <tr>
+      <td>$#</td>
+      <td>参数个数</td>
+    </tr>
+    <tr>
+      <td>$0</td>
+      <td>shell本身文件名</td>
+    </tr>
+    <tr>
+      <td>$1~$n</td>
+      <td>参数n</td>
+    </tr>
+    <tr>
+      <td>$*,$@</td>
+      <td>所有参数列表</td>
+    </tr>
+    <tr>
+      <td>${}</td>
+      <td>参数替换</td>
+    </tr>
+    <tr>
+      <td>$?</td>
+      <td>上一条命令的返回值</td>
+    </tr>
+    <tr>
+      <td>$$</td>
+      <td>shell本身PID</td>
+    </tr>
+    <tr>
+      <td>$!</td>
+      <td>上一条后台进程的PID</td>
+    </tr>
+  </tbody>
+</table>
+
+
+  </article>
+</div>
+
+      </div>
+    </div>
+    
+    <footer class="footer">
+  <div id="gotop">^</div>
+  <br>
+	@2015 Pithy Theme by Pawpaw.
+</footer>
+
+    
+  </body>
+
+</html>

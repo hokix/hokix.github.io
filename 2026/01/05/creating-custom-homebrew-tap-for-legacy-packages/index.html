@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html>    
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width initial-scale=1">
+
+  <title>Creating a Custom Homebrew Tap for Legacy Packages</title>
+  <meta name="description" content="When Homebrew Core drops support for older versions of packages, you're left with few options: upgrade your workflow, build from source manually, or maintain...">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="/2026/01/05/creating-custom-homebrew-tap-for-legacy-packages/">
+  <link rel="alternate" type="application/atom+xml" title="Xiao Hui's Blog" href="/feed.xml" />
+  <script src="/scripts/pithy.js" defer></script>
+</head>
+
+
+  <body>
+    <header class="header">
+	<div class="header-container">
+		<div class="nav">
+			
+				<li>
+					<a href="/index.html">home</a>
+				</li>			
+			
+			
+				<li>
+					<a href="/archive/">archive</a>
+				</li>			
+			
+			
+				<li>
+					<a href="/category/">category</a>
+				</li>			
+			
+			
+				<li>
+					<a href="/about/">about</a>
+				</li>			
+			
+		</div>
+		<div class="description"> I'm going to succeed because I'm crazy enough to think I can. </div>		
+		<ul class="social-links">
+			<li>
+				<a href="https://github.com/hokix" title="Github">
+					<img width="19px" height="19px" src="/images/github.png"/>
+				</a>
+			</li>
+			<li>
+				<a href="/feed.xml" title="RSS">
+					<img width="19px" height="19px" src="/images/rss.png"/>
+				</a>
+			</li>
+		</ul>		
+	</div>
+</header>
+
+    <br>
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+  <br>
+  <header class="post-header">
+    <h1 class="post-title">Creating a Custom Homebrew Tap for Legacy Packages</h1>
+    <p class="post-meta">Jan 5, 2026</p>
+  </header>
+
+  <article class="post-content">
+    <blockquote>
+  <p><strong>⚠️ AI-GENERATED CONTENT</strong><br />
+This post was created entirely by AI (GitHub Copilot) based on a user request. While technically reviewed, it may contain inaccuracies or outdated information. Use at your own discretion.</p>
+</blockquote>
+
+<p>When Homebrew Core drops support for older versions of packages, you’re left with few options: upgrade your workflow, build from source manually, or maintain your own tap. This guide shows how to create a custom Homebrew tap for legacy packages.</p>
+
+<h2 id="why-custom-taps">Why Custom Taps?</h2>
+
+<p>Homebrew Core has strict policies about version support:</p>
+
+<ul>
+  <li>Only the latest stable versions are maintained</li>
+  <li>Deprecated versions are removed periodically</li>
+  <li>Security updates may force breaking changes</li>
+</ul>
+
+<p>Sometimes you need older versions for:</p>
+
+<ul>
+  <li>Legacy project compatibility</li>
+  <li>Stable production environments</li>
+  <li>Testing against specific versions</li>
+  <li>Avoiding breaking changes in dependencies</li>
+</ul>
+
+<h2 id="example-homebrew-legacy">Example: homebrew-legacy</h2>
+
+<p>I created <a href="https://github.com/hokix/homebrew-legacy">hokix/homebrew-legacy</a> to maintain older package versions no longer in homebrew-core. This serves as a reference implementation.</p>
+
+<h2 id="creating-your-own-tap">Creating Your Own Tap</h2>
+
+<h3 id="1-repository-structure">1. Repository Structure</h3>
+
+<p>Create a repository named <code class="language-plaintext highlighter-rouge">homebrew-&lt;tap-name&gt;</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Example: homebrew-legacy</span>
+<span class="nb">mkdir </span>homebrew-legacy
+<span class="nb">cd </span>homebrew-legacy
+git init
+</code></pre></div></div>
+
+<p>Homebrew expects a specific structure:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>homebrew-legacy/
+├── Formula/          # Main formula directory
+│   ├── package1.rb
+│   └── package2.rb
+├── Casks/           # Optional: for GUI apps
+├── README.md
+└── .github/
+    └── workflows/   # Optional: CI/CD for testing
+</code></pre></div></div>
+
+<h3 id="2-writing-a-formula">2. Writing a Formula</h3>
+
+<p>Formulae are Ruby files that describe how to install packages. Here’s a template:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">PackageName</span> <span class="o">&lt;</span> <span class="no">Formula</span>
+  <span class="n">desc</span> <span class="s2">"Brief description of the package"</span>
+  <span class="n">homepage</span> <span class="s2">"https://example.com"</span>
+  <span class="n">url</span> <span class="s2">"https://example.com/releases/package-1.2.3.tar.gz"</span>
+  <span class="n">sha256</span> <span class="s2">"abc123..."</span> <span class="c1"># SHA-256 checksum of the tarball</span>
+  <span class="n">license</span> <span class="s2">"MIT"</span>
+
+  <span class="c1"># Dependencies</span>
+  <span class="n">depends_on</span> <span class="s2">"cmake"</span> <span class="o">=&gt;</span> <span class="ss">:build</span>  <span class="c1"># Build-time dependency</span>
+  <span class="n">depends_on</span> <span class="s2">"openssl@1.1"</span>      <span class="c1"># Runtime dependency</span>
+
+  <span class="k">def</span> <span class="nf">install</span>
+    <span class="c1"># Build and installation commands</span>
+    <span class="nb">system</span> <span class="s2">"./configure"</span><span class="p">,</span> <span class="s2">"--prefix=</span><span class="si">#{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">"</span>
+    <span class="nb">system</span> <span class="s2">"make"</span>
+    <span class="nb">system</span> <span class="s2">"make"</span><span class="p">,</span> <span class="s2">"install"</span>
+  <span class="k">end</span>
+
+  <span class="nb">test</span> <span class="k">do</span>
+    <span class="c1"># Test that the package works</span>
+    <span class="nb">system</span> <span class="s2">"</span><span class="si">#{</span><span class="n">bin</span><span class="si">}</span><span class="s2">/package"</span><span class="p">,</span> <span class="s2">"--version"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h3 id="3-getting-formula-info-from-homebrew-history">3. Getting Formula Info from Homebrew History</h3>
+
+<p>For packages removed from homebrew-core, retrieve the last working formula:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Clone homebrew-core</span>
+git clone https://github.com/Homebrew/homebrew-core.git
+<span class="nb">cd </span>homebrew-core
+
+<span class="c"># Find the last commit for the formula</span>
+git log <span class="nt">--all</span> <span class="nt">--full-history</span> <span class="nt">--</span> Formula/package.rb
+
+<span class="c"># View the formula at that commit</span>
+git show &lt;commit-hash&gt;:Formula/package.rb <span class="o">&gt;</span> ../homebrew-legacy/Formula/package.rb
+</code></pre></div></div>
+
+<h3 id="4-computing-sha256-checksums">4. Computing SHA256 Checksums</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Download the source tarball</span>
+curl <span class="nt">-LO</span> https://example.com/package-1.2.3.tar.gz
+
+<span class="c"># Compute SHA256</span>
+shasum <span class="nt">-a</span> 256 package-1.2.3.tar.gz
+</code></pre></div></div>
+
+<h3 id="5-testing-your-formula">5. Testing Your Formula</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Install from local repository (for testing)</span>
+brew <span class="nb">install</span> <span class="nt">--build-from-source</span> ./Formula/package.rb
+
+<span class="c"># Audit for common issues</span>
+brew audit <span class="nt">--strict</span> <span class="nt">--online</span> ./Formula/package.rb
+
+<span class="c"># Run tests</span>
+brew <span class="nb">test</span> ./Formula/package.rb
+
+<span class="c"># Uninstall after testing</span>
+brew uninstall package
+</code></pre></div></div>
+
+<h3 id="6-publishing-your-tap">6. Publishing Your Tap</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Add, commit, and push to GitHub</span>
+git add Formula/
+git commit <span class="nt">-m</span> <span class="s2">"Add legacy package formula"</span>
+git push origin main
+</code></pre></div></div>
+
+<h2 id="using-your-custom-tap">Using Your Custom Tap</h2>
+
+<h3 id="adding-the-tap">Adding the Tap</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Add your tap</span>
+brew tap hokix/legacy https://github.com/hokix/homebrew-legacy.git
+
+<span class="c"># Or use the shorthand (GitHub only)</span>
+brew tap hokix/legacy
+</code></pre></div></div>
+
+<h3 id="installing-packages">Installing Packages</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Install from your tap</span>
+brew <span class="nb">install </span>hokix/legacy/package
+
+<span class="c"># List all taps</span>
+brew tap
+
+<span class="c"># Remove a tap</span>
+brew untap hokix/legacy
+</code></pre></div></div>
+
+<h3 id="updating-tap-formulae">Updating Tap Formulae</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Update all taps (including yours)</span>
+brew update
+
+<span class="c"># Upgrade packages from your tap</span>
+brew upgrade hokix/legacy/package
+</code></pre></div></div>
+
+<h2 id="best-practices">Best Practices</h2>
+
+<h3 id="1-version-pinning">1. Version Pinning</h3>
+
+<p>Pin specific versions in formula names for clarity:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Instead of: Formula/python.rb</span>
+<span class="c1"># Use: Formula/python@3.8.rb</span>
+<span class="k">class</span> <span class="nc">PythonAT38</span> <span class="o">&lt;</span> <span class="no">Formula</span>
+  <span class="n">desc</span> <span class="s2">"Python 3.8 (legacy version)"</span>
+  <span class="c1"># ...</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h3 id="2-deprecation-notices">2. Deprecation Notices</h3>
+
+<p>Add warnings for truly outdated packages:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">install</span>
+  <span class="n">opoo</span> <span class="s2">"This is a legacy version. Consider upgrading to the latest."</span>
+  <span class="c1"># ... installation steps</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h3 id="3-documentation">3. Documentation</h3>
+
+<p>Maintain a clear README:</p>
+
+<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gh"># homebrew-legacy</span>
+
+Legacy package versions no longer supported by homebrew-core.
+
+<span class="gu">## Available Packages</span>
+<span class="p">
+-</span> <span class="sb">`package@1.0`</span> - Last 1.x version before 2.0 rewrite
+<span class="p">-</span> <span class="sb">`old-tool`</span> - Removed from homebrew-core in 2024
+
+<span class="gu">## Installation</span>
+
+brew tap hokix/legacy
+brew install hokix/legacy/package@1.0
+
+<span class="gu">## Warning</span>
+
+These packages are unmaintained. Use at your own risk.
+</code></pre></div></div>
+
+<h3 id="4-cicd-testing">4. CI/CD Testing</h3>
+
+<p>Add GitHub Actions to test formulae automatically:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># .github/workflows/test.yml</span>
+<span class="na">name</span><span class="pi">:</span> <span class="s">Test Formulae</span>
+<span class="na">on</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">push</span><span class="pi">,</span> <span class="nv">pull_request</span><span class="pi">]</span>
+
+<span class="na">jobs</span><span class="pi">:</span>
+  <span class="na">test</span><span class="pi">:</span>
+    <span class="na">runs-on</span><span class="pi">:</span> <span class="s">macos-latest</span>
+    <span class="na">steps</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/checkout@v4</span>
+      <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Test formulae</span>
+        <span class="na">run</span><span class="pi">:</span> <span class="pi">|</span>
+          <span class="s">brew test-bot --tap=$GITHUB_REPOSITORY</span>
+</code></pre></div></div>
+
+<h2 id="common-pitfalls">Common Pitfalls</h2>
+
+<h3 id="1-bottle-support">1. Bottle Support</h3>
+
+<p>Pre-built binaries (bottles) require significant infrastructure. For personal taps, build from source:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Disable bottling</span>
+<span class="n">bottle</span> <span class="ss">:unneeded</span>
+</code></pre></div></div>
+
+<h3 id="2-conflicting-formulae">2. Conflicting Formulae</h3>
+
+<p>Avoid conflicts with homebrew-core:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Use versioned names</span>
+Formula/python@3.8.rb  <span class="c"># Good</span>
+Formula/python.rb      <span class="c"># Bad - conflicts with core</span>
+</code></pre></div></div>
+
+<h3 id="3-dependency-hell">3. Dependency Hell</h3>
+
+<p>Legacy packages may depend on deprecated libraries:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Pin to specific dependency versions</span>
+<span class="n">depends_on</span> <span class="s2">"openssl@1.1"</span>  <span class="c1"># Not just "openssl"</span>
+</code></pre></div></div>
+
+<h3 id="4-build-failures-on-new-macos">4. Build Failures on New macOS</h3>
+
+<p>Old packages may not build on newer macOS versions. Document compatibility:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">desc</span> <span class="s2">"Legacy package (tested on macOS 12-13)"</span>
+<span class="c1"># Consider patches if needed</span>
+<span class="n">patch</span> <span class="ss">:DATA</span> <span class="k">if</span> <span class="no">MacOS</span><span class="p">.</span><span class="nf">version</span> <span class="o">&gt;=</span> <span class="ss">:sonoma</span>
+</code></pre></div></div>
+
+<h2 id="alternatives-to-custom-taps">Alternatives to Custom Taps</h2>
+
+<p>Before creating a tap, consider:</p>
+
+<ol>
+  <li><strong>Docker</strong>: Containerize legacy environments</li>
+  <li><strong>Homebrew Versions</strong>: Some older versions available in <code class="language-plaintext highlighter-rouge">homebrew/cask-versions</code></li>
+  <li><strong>Manual builds</strong>: For one-off needs, build manually</li>
+  <li><strong>Package from source</strong>: Use <code class="language-plaintext highlighter-rouge">./configure &amp;&amp; make install</code></li>
+</ol>
+
+<h2 id="real-world-example-hokixhomebrew-legacy">Real-World Example: hokix/homebrew-legacy</h2>
+
+<p>My tap maintains:</p>
+
+<ul>
+  <li>Legacy development tools no longer in core</li>
+  <li>Specific versions for production compatibility</li>
+  <li>Tools removed due to deprecation</li>
+</ul>
+
+<p>Usage:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew tap hokix/legacy
+brew <span class="nb">install </span>hokix/legacy/&lt;package&gt;
+</code></pre></div></div>
+
+<p>Check the <a href="https://github.com/hokix/homebrew-legacy">repository</a> for available packages.</p>
+
+<h2 id="maintenance-considerations">Maintenance Considerations</h2>
+
+<p>Custom taps require ongoing work:</p>
+
+<ul>
+  <li><strong>Security updates</strong>: Monitor CVEs for your packages</li>
+  <li><strong>macOS compatibility</strong>: Test on new macOS releases</li>
+  <li><strong>Dependency updates</strong>: Keep dependencies current</li>
+  <li><strong>Documentation</strong>: Update README when adding/removing formulae</li>
+</ul>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>Custom Homebrew taps give you control over package versions when homebrew-core moves on. While it adds maintenance burden, it’s invaluable for:</p>
+
+<ul>
+  <li>Maintaining legacy environments</li>
+  <li>Avoiding forced upgrades</li>
+  <li>Preserving working toolchains</li>
+  <li>Supporting older projects</li>
+</ul>
+
+<p>Start small, document well, and only maintain what you actually need. Your future self (and colleagues) will thank you.</p>
+
+<h2 id="resources">Resources</h2>
+
+<ul>
+  <li><a href="https://docs.brew.sh/How-to-Create-and-Maintain-a-Tap">Homebrew Tap Documentation</a></li>
+  <li><a href="https://docs.brew.sh/Formula-Cookbook">Formula Cookbook</a></li>
+  <li><a href="https://github.com/hokix/homebrew-legacy">hokix/homebrew-legacy</a></li>
+  <li><a href="https://github.com/Homebrew/homebrew-core">Homebrew Core Repository</a></li>
+</ul>
+
+<hr />
+
+<p><em>Have questions or found this useful? Let me know via GitHub issues!</em></p>
+
+  </article>
+</div>
+
+      </div>
+    </div>
+    
+    <footer class="footer">
+  <div id="gotop">^</div>
+  <br>
+	@2015 Pithy Theme by Pawpaw.
+</footer>
+
+    
+  </body>
+
+</html>

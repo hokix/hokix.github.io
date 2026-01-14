@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>    
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width initial-scale=1">
+
+  <title>shell中按行读取文件</title>
+  <meta name="description" content="一般来说，shell中循环读取文件的脚本是这么写的：for line in `cat filename`do	echo $linedone">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="/2014/04/19/read_line_in_shell/">
+  <link rel="alternate" type="application/atom+xml" title="Xiao Hui's Blog" href="/feed.xml" />
+  <script src="/scripts/pithy.js" defer></script>
+</head>
+
+
+  <body>
+    <header class="header">
+	<div class="header-container">
+		<div class="nav">
+			
+				<li>
+					<a href="/index.html">home</a>
+				</li>			
+			
+			
+				<li>
+					<a href="/archive/">archive</a>
+				</li>			
+			
+			
+				<li>
+					<a href="/category/">category</a>
+				</li>			
+			
+			
+				<li>
+					<a href="/about/">about</a>
+				</li>			
+			
+		</div>
+		<div class="description"> I'm going to succeed because I'm crazy enough to think I can. </div>		
+		<ul class="social-links">
+			<li>
+				<a href="https://github.com/hokix" title="Github">
+					<img width="19px" height="19px" src="/images/github.png"/>
+				</a>
+			</li>
+			<li>
+				<a href="/feed.xml" title="RSS">
+					<img width="19px" height="19px" src="/images/rss.png"/>
+				</a>
+			</li>
+		</ul>		
+	</div>
+</header>
+
+    <br>
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+  <br>
+  <header class="post-header">
+    <h1 class="post-title">shell中按行读取文件</h1>
+    <p class="post-meta">Apr 19, 2014</p>
+  </header>
+
+  <article class="post-content">
+    <p>一般来说，shell中循环读取文件的脚本是这么写的：</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="k">for </span>line <span class="k">in</span> <span class="sb">`</span><span class="nb">cat </span>filename<span class="sb">`</span>
+<span class="k">do
+	</span><span class="nb">echo</span> <span class="nv">$line</span>
+<span class="k">done</span></code></pre></figure>
+
+<p>不过这么写很多情况下是有问题的，例如当输入文件每一行有多列的时候：</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nt">-rw-r--r--</span>   1 hokiX  staff  1072  3  4 00:46 LICENSE
+<span class="nt">-rw-r--r--</span>   1 hokiX  staff    27  3  4 00:47 README.md</code></pre></figure>
+
+<p>上面的做法简直是一场灾难…</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nt">-rw-r--r--</span>
+1
+hokiX
+staff
+1072
+3
+4
+00:46
+LICENSE
+<span class="nt">-rw-r--r--</span>
+1
+hokiX
+staff
+27
+3
+4
+00:47
+README.md</code></pre></figure>
+
+<p>正确的做法是使用<code class="language-plaintext highlighter-rouge">read</code>命令：</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">cat </span>filename | <span class="k">while </span><span class="nb">read </span>line
+<span class="k">do
+	</span><span class="nb">echo</span> <span class="nv">$line</span>
+<span class="k">done</span></code></pre></figure>
+
+<p>当然使用<strong>标准输入</strong>替代上面的<strong>管道</strong>也是没有问题的：</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="k">while </span><span class="nb">read </span>line
+<span class="k">do
+	</span><span class="nb">echo</span> <span class="nv">$line</span>
+<span class="k">done</span> &lt; filename</code></pre></figure>
+
+<p><del>当然个人更倾向于使用管道的方法，这样输入就不用局限在使用文件了。</del></p>
+
+<p>使用标准输入是更好的编程风格，因为每个管道都会开启一个子shell，子shell中的变量，以及对变量的操作在父shell中不可见。</p>
+
+<p>这里还需要注意另外一个问题，输入文件中的tab，变替换成了space：</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">Input:
+a	b
+c d
+Output:
+a b
+c d</code></pre></figure>
+
+<p>原因是shell脚本中有个变量叫IFS(Internal Field Seprator)，内域分隔符，对输入做了替换。IFS定义如下：</p>
+<blockquote>
+  <p>The shell uses the value stored in IFS, which is the space, tab, and newline characters by default, to delimit words for the read and set commands, when parsing output from command substitution, and when performing variable substitution.</p>
+</blockquote>
+
+<p>因此需要对代码稍作修改，才能得到正确的输出:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">IFS</span><span class="o">=</span><span class="s1">''</span>
+<span class="k">while </span><span class="nb">read </span>line
+<span class="k">do
+	</span><span class="nb">echo</span> <span class="nv">$line</span>
+<span class="k">done</span> &lt; filename</code></pre></figure>
+
+
+  </article>
+</div>
+
+      </div>
+    </div>
+    
+    <footer class="footer">
+  <div id="gotop">^</div>
+  <br>
+	@2015 Pithy Theme by Pawpaw.
+</footer>
+
+    
+  </body>
+
+</html>

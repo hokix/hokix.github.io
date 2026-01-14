@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>    
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width initial-scale=1">
+
+  <title>使用itertools来写一个简单的map reduce streaming程序</title>
+  <meta name="description" content="常见的map reduce streaming入门版的python代码长这个样子:">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="/2015/07/18/use_python_itertools_in_map_reduce_streaming/">
+  <link rel="alternate" type="application/atom+xml" title="Xiao Hui's Blog" href="/feed.xml" />
+  <script src="/scripts/pithy.js" defer></script>
+</head>
+
+
+  <body>
+    <header class="header">
+	<div class="header-container">
+		<div class="nav">
+			
+				<li>
+					<a href="/index.html">home</a>
+				</li>			
+			
+			
+				<li>
+					<a href="/archive/">archive</a>
+				</li>			
+			
+			
+				<li>
+					<a href="/category/">category</a>
+				</li>			
+			
+			
+				<li>
+					<a href="/about/">about</a>
+				</li>			
+			
+		</div>
+		<div class="description"> I'm going to succeed because I'm crazy enough to think I can. </div>		
+		<ul class="social-links">
+			<li>
+				<a href="https://github.com/hokix" title="Github">
+					<img width="19px" height="19px" src="/images/github.png"/>
+				</a>
+			</li>
+			<li>
+				<a href="/feed.xml" title="RSS">
+					<img width="19px" height="19px" src="/images/rss.png"/>
+				</a>
+			</li>
+		</ul>		
+	</div>
+</header>
+
+    <br>
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+  <br>
+  <header class="post-header">
+    <h1 class="post-title">使用itertools来写一个简单的map reduce streaming程序</h1>
+    <p class="post-meta">Jul 18, 2015</p>
+  </header>
+
+  <article class="post-content">
+    <p>常见的map reduce streaming入门版的python代码长这个样子:</p>
+
+<p>mapper.py</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="c1">#!/usr/bin/env python
+</span><span class="kn">import</span> <span class="n">sys</span>
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">separater</span><span class="o">=</span><span class="sh">'</span><span class="se">\t</span><span class="sh">'</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">sys</span><span class="p">.</span><span class="n">stdin</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">words</span> <span class="ow">in</span> <span class="n">line</span><span class="p">.</span><span class="nf">strip</span><span class="p">().</span><span class="nf">split</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span><span class="p">:</span>
+                <span class="k">print</span> <span class="sh">'</span><span class="s">%s</span><span class="se">\t</span><span class="s">%s</span><span class="sh">'</span> <span class="o">%</span> <span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="sh">'</span><span class="s">__main__</span><span class="sh">'</span><span class="p">:</span>
+	<span class="nf">main</span><span class="p">()</span></code></pre></figure>
+
+<p>reducer.py</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="c1">#!/usr/bin/env python
+</span><span class="kn">import</span> <span class="n">sys</span>
+<span class="n">last_key</span> <span class="o">=</span> <span class="sh">''</span>
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">separater</span><span class="o">=</span><span class="sh">'</span><span class="se">\t</span><span class="sh">'</span><span class="p">):</span>
+    <span class="n">counts</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">sys</span><span class="p">.</span><span class="n">stdin</span><span class="p">:</span>
+        <span class="n">word</span><span class="p">,</span> <span class="n">count</span> <span class="o">=</span> <span class="n">line</span><span class="p">.</span><span class="nf">strip</span><span class="p">().</span><span class="nf">split</span><span class="p">(</span><span class="n">separater</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">last_word</span> <span class="o">==</span> <span class="n">word</span><span class="p">:</span>
+            <span class="n">counts</span> <span class="o">+=</span> <span class="nf">int</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">print</span> <span class="sh">'</span><span class="s">%s</span><span class="se">\t</span><span class="s">%d</span><span class="sh">'</span> <span class="o">%</span> <span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">counts</span><span class="p">)</span>
+            <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">last_word</span> <span class="o">=</span> <span class="n">word</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">print</span> <span class="sh">'</span><span class="s">%s</span><span class="se">\t</span><span class="s">%d</span><span class="sh">'</span> <span class="o">%</span> <span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">counts</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="sh">'</span><span class="s">__main__</span><span class="sh">'</span><span class="p">:</span>
+	<span class="nf">main</span><span class="p">()</span></code></pre></figure>
+
+<p>咦，上面mapper.py和reducer.py怎么这么乱糟糟的… 因为streaming的reducer需要自己维护key是否变化… 真心很怂啊…</p>
+
+<p>然后我就看到了一篇文章，用itertools.groupby，operator.itemgetter很优雅地解决了这个问题，真心赞啊…</p>
+
+<p>mapper.py</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="c1">#!/usr/bin/env python
+</span><span class="kn">import</span> <span class="n">sys</span> 
+<span class="k">def</span> <span class="nf">read_input</span><span class="p">(</span><span class="nb">file</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">file</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="n">line</span><span class="p">.</span><span class="nf">split</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">separator</span><span class="o">=</span><span class="sh">'</span><span class="se">\t</span><span class="sh">'</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="nf">read_input</span><span class="p">(</span><span class="n">sys</span><span class="p">.</span><span class="n">stdin</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">words</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span><span class="p">:</span>
+            <span class="k">print</span> <span class="sh">'</span><span class="s">%s%s%d</span><span class="sh">'</span> <span class="o">%</span> <span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">separator</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="sh">'</span><span class="s">__main__</span><span class="sh">'</span><span class="p">:</span>
+    <span class="nf">main</span><span class="p">()</span> </code></pre></figure>
+
+<p>reducer.py</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="c1">#!/usr/bin/env python
+</span><span class="kn">from</span> <span class="n">itertools</span> <span class="kn">import</span> <span class="n">groupby</span>
+<span class="kn">from</span> <span class="n">operator</span> <span class="kn">import</span> <span class="n">itemgetter</span>
+<span class="kn">import</span> <span class="n">sys</span> 
+
+<span class="k">def</span> <span class="nf">read_mapper_output</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="sh">'</span><span class="se">\t</span><span class="sh">'</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">file</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="n">line</span><span class="p">.</span><span class="nf">strip</span><span class="p">().</span><span class="nf">split</span><span class="p">(</span><span class="n">separator</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>                                                                          
+    
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">separator</span><span class="o">=</span><span class="sh">'</span><span class="se">\t</span><span class="sh">'</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="nf">read_mapper_output</span><span class="p">(</span><span class="n">sys</span><span class="p">.</span><span class="n">stdin</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="n">separator</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">current_word</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="nf">groupby</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nf">itemgetter</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">total_count</span> <span class="o">=</span> <span class="nf">sum</span><span class="p">(</span><span class="nf">int</span><span class="p">(</span><span class="n">count</span><span class="p">)</span> <span class="k">for</span> <span class="n">current_word</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">group</span><span class="p">)</span>
+            <span class="k">print</span> <span class="sh">'</span><span class="s">%s%s%d</span><span class="sh">'</span> <span class="o">%</span> <span class="p">(</span><span class="n">current_word</span><span class="p">,</span> <span class="n">separator</span><span class="p">,</span> <span class="n">total_count</span><span class="p">)</span>
+        <span class="k">except</span> <span class="nb">ValueError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="sh">'</span><span class="s">__main__</span><span class="sh">'</span><span class="p">:</span>
+    <span class="nf">main</span><span class="p">()</span></code></pre></figure>
+
+<h2 id="参考资料">参考资料</h2>
+
+<ul>
+  <li><a href="http://www.michael-noll.com/tutorials/writing-an-hadoop-mapreduce-program-in-python/">Writing an Hadoop MapReduce Program in Python</a></li>
+</ul>
+
+
+  </article>
+</div>
+
+      </div>
+    </div>
+    
+    <footer class="footer">
+  <div id="gotop">^</div>
+  <br>
+	@2015 Pithy Theme by Pawpaw.
+</footer>
+
+    
+  </body>
+
+</html>

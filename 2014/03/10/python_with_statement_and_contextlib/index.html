@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>    
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width initial-scale=1">
+
+  <title>Python中with和contextlib使用小结</title>
+  <meta name="description" content="python在2.5中引入了with statement，简单地说，with封装了__enter__和__exit__函数的调用，可以用来简化try…except…finally的使用，with官方定义如下：">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="/2014/03/10/python_with_statement_and_contextlib/">
+  <link rel="alternate" type="application/atom+xml" title="Xiao Hui's Blog" href="/feed.xml" />
+  <script src="/scripts/pithy.js" defer></script>
+</head>
+
+
+  <body>
+    <header class="header">
+	<div class="header-container">
+		<div class="nav">
+			
+				<li>
+					<a href="/index.html">home</a>
+				</li>			
+			
+			
+				<li>
+					<a href="/archive/">archive</a>
+				</li>			
+			
+			
+				<li>
+					<a href="/category/">category</a>
+				</li>			
+			
+			
+				<li>
+					<a href="/about/">about</a>
+				</li>			
+			
+		</div>
+		<div class="description"> I'm going to succeed because I'm crazy enough to think I can. </div>		
+		<ul class="social-links">
+			<li>
+				<a href="https://github.com/hokix" title="Github">
+					<img width="19px" height="19px" src="/images/github.png"/>
+				</a>
+			</li>
+			<li>
+				<a href="/feed.xml" title="RSS">
+					<img width="19px" height="19px" src="/images/rss.png"/>
+				</a>
+			</li>
+		</ul>		
+	</div>
+</header>
+
+    <br>
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+  <br>
+  <header class="post-header">
+    <h1 class="post-title">Python中with和contextlib使用小结</h1>
+    <p class="post-meta">Mar 10, 2014</p>
+  </header>
+
+  <article class="post-content">
+    <p>python在2.5中引入了with statement，简单地说，with封装了__enter__和__exit__函数的调用，可以用来简化try…except…finally的使用，with官方定义如下：</p>
+
+<blockquote>
+  <p>The with statement is used to wrap the execution of a block with methods defined by a context manager.</p>
+</blockquote>
+
+<p>with定义中提到的context manager，定义如下：</p>
+
+<blockquote>
+  <p>A context manager is an object that defines the runtime context to be established when executing a with statement.</p>
+</blockquote>
+
+<p>context manager定义了__enter__和__exit__函数，供with使用。contextmanager是python的一种<a href="http://docs.python.org/2/library/stdtypes.html#typecontextmanager">内置类型</a>，不过context manager也可以理解为为一种协议，只要函数包含了这两个函数即可。因此既可以通过contextlib.contextmanager来生成这两个函数，也可以直接写好。<br />
+一个简单读取文件的例子：</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">with</span> <span class="nf">open</span><span class="p">(</span><span class="sh">'</span><span class="s">filename</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">r</span><span class="sh">'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+	<span class="k">print</span> <span class="n">f</span><span class="p">.</span><span class="nf">readline</span><span class="p">()</span></code></pre></figure>
+
+<p>打开的文件会在with语句块结束的时候自动关闭。这段代码等价于：</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">try</span><span class="p">:</span>
+	<span class="n">f</span> <span class="o">=</span> <span class="nf">open</span><span class="p">(</span><span class="sh">'</span><span class="s">filename</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">r</span><span class="sh">'</span><span class="p">)</span>
+	<span class="k">print</span> <span class="n">f</span><span class="p">.</span><span class="nf">readline</span><span class="p">()</span>
+<span class="k">finally</span><span class="p">:</span>
+	<span class="n">f</span><span class="p">.</span><span class="nf">close</span><span class="p">()</span></code></pre></figure>
+
+<h2 id="with的基本语法和执行过程">with的基本语法和执行过程</h2>
+
+<p>with的基本语法：</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">with</span> <span class="n">with_item</span> <span class="k">as</span> <span class="n">target_item</span><span class="p">:</span>
+	<span class="n">do_something</span></code></pre></figure>
+
+<p>这里as target_item的部分是可选的，target_item可以看做with_item执行的返回值</p>
+
+<p>with的简化执行过程：</p>
+<ol>
+  <li>执行with_item的__enter__()</li>
+  <li>执行代码块do_something</li>
+  <li>执行with_item的__exit__()</li>
+</ol>
+
+<p>这里忽略了一个很重要的细节，with代码块do_something过程中如果出错，并不保证__exit__函数被执行：<br />
+如果do_something抛出异常，那么异常的type, value, traceback会作为参数传给__exit__函数，正常退出时这三个参数值为None；<br />
+如果do_something因为其他任何原因出错，则忽略__exit__函数。</p>
+
+<p>另外需要注意的一点是，代码抛出异常时，__exit__函数如果已经处理了异常，则可以返回True值；如果需要外部代码来处理该异常，则__exit__函数不需要做任何工作。</p>
+
+<h2 id="context-manager">context manager</h2>
+
+<p>一个使用context manager的例子：</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">tag</span><span class="p">:</span>
+	<span class="c1"># tag类符合context manager类型的定义
+</span>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+		<span class="n">self</span><span class="p">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+	<span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="n">self</span><span class="p">):</span>
+		<span class="k">print</span> <span class="sh">"</span><span class="s">&lt;%s&gt;</span><span class="sh">"</span> <span class="o">%</span> <span class="n">self</span><span class="p">.</span><span class="n">name</span>
+		<span class="c1"># 这里的返回值最为as的值
+</span>		<span class="k">return</span> <span class="n">self</span><span class="p">.</span><span class="n">name</span>
+	<span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">exc_traceback</span><span class="p">):</span>
+		<span class="k">print</span> <span class="sh">"</span><span class="s">&lt;/%s&gt;</span><span class="sh">"</span> <span class="o">%</span> <span class="n">self</span><span class="p">.</span><span class="n">name</span>
+		<span class="c1"># 如果希望在这里处理异常，并清除异常状态，在这里增加返回值，且返回值为真
+</span>		<span class="c1"># return True
+</span>
+<span class="k">with</span> <span class="nf">tag</span><span class="p">(</span><span class="sh">"</span><span class="s">h1</span><span class="sh">"</span><span class="p">)</span> <span class="k">as</span> <span class="n">t</span><span class="p">:</span>
+	<span class="k">print</span> <span class="n">t</span> <span class="o">+</span> <span class="sh">"</span><span class="s">.foo</span><span class="sh">"</span></code></pre></figure>
+
+<p>执行结果如下：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;h1&gt;  
+h1.foo
+&lt;/h1&gt;   这段代码等价于下文3.1.中使用contextlib.contextmanager的代码。
+</code></pre></div></div>
+
+<h2 id="contextlib">contextlib</h2>
+
+<p>在with定义里提到的context manager在contextlib中，contextlib为with一共提供了一个装饰器和两个函数：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>contextlib.contextmanager  
+contextlib.nested  
+contextlib.closing  
+</code></pre></div></div>
+
+<h3 id="contextlibcontextmanager">contextlib.contextmanager</h3>
+
+<p>一个装饰器，利用生成器为函数提供__enter__和__exit__函数。例如：</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="n">contextlib</span> <span class="kn">import</span> <span class="n">contextmanager</span>
+<span class="nd">@contextmanager</span>
+<span class="k">def</span> <span class="nf">tag</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+	<span class="k">print</span> <span class="sh">"</span><span class="s">&lt;%s&gt;</span><span class="sh">"</span> <span class="o">%</span> <span class="n">name</span>
+	<span class="k">yield</span> <span class="n">name</span>
+	<span class="k">print</span> <span class="sh">"</span><span class="s">&lt;/%s&gt;</span><span class="sh">"</span> <span class="o">%</span> <span class="n">name</span>
+
+<span class="k">with</span> <span class="nf">tag</span><span class="p">(</span><span class="sh">"</span><span class="s">h1</span><span class="sh">"</span><span class="p">)</span> <span class="k">as</span> <span class="n">t</span><span class="p">:</span>
+	<span class="k">print</span> <span class="n">t</span> <span class="o">+</span> <span class="sh">"</span><span class="s">.foo</span><span class="sh">"</span></code></pre></figure>
+
+<p>简单地说，yield前的部分作为__enter__，yield后的部分作为__exit__。yield只能有一个值，作为as语句中target_item的值。<br />
+使用contextmanager装饰器，在上面的例子中，如果出现出现异常，__exit__并未做任何处理。一个处理异常的例子:</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="n">contextlib</span> <span class="kn">import</span> <span class="n">context</span> <span class="n">manager</span>
+<span class="k">def</span> <span class="nf">tag</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+	<span class="k">try</span><span class="p">:</span>
+		<span class="k">print</span> <span class="sh">"</span><span class="s">&lt;%s&gt;</span><span class="sh">"</span> <span class="o">%</span> <span class="n">name</span>
+		<span class="k">yield</span> <span class="n">name</span>
+	<span class="k">except</span> <span class="nb">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+		<span class="k">print</span> <span class="n">e</span>
+	<span class="k">finally</span><span class="p">:</span>
+		<span class="k">print</span> <span class="sh">"</span><span class="s">&lt;/%s&gt;</span><span class="sh">"</span> <span class="o">%</span> <span class="n">name</span>
+
+<span class="k">with</span> <span class="nf">tag</span><span class="p">(</span><span class="sh">"</span><span class="s">h1</span><span class="sh">"</span><span class="p">)</span> <span class="k">as</span> <span class="n">t</span><span class="p">:</span>
+	<span class="k">print</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">1</span></code></pre></figure>
+
+<p>执行结果如下：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;h1&gt;
+cannot concatenate 'str' and 'int' objects
+&lt;/h1&gt;
+</code></pre></div></div>
+
+<h3 id="contextlibnested">contextlib.nested</h3>
+
+<p>用来合并多个context manager，从而避免嵌套多层with语句。但其实从2.7版本以后，with语法已经原生支持使用多个context manager。因此嵌套with有以下三个版本：</p>
+
+<ul>
+  <li>最原始的版本：</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">with</span> <span class="nc">A</span><span class="p">()</span> <span class="k">as</span> <span class="n">a</span><span class="p">:</span>
+	<span class="k">with</span> <span class="nc">B</span><span class="p">()</span> <span class="k">as</span> <span class="n">b</span><span class="p">:</span>
+		<span class="nf">do_something</span><span class="p">()</span></code></pre></figure>
+
+<ul>
+  <li>nested版本：</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="n">contextlib</span> <span class="kn">import</span> <span class="n">nested</span>
+<span class="k">with</span> <span class="nf">nested</span><span class="p">(</span><span class="nc">A</span><span class="p">(),</span> <span class="nc">B</span><span class="p">())</span> <span class="nf">as </span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+	<span class="nf">do_something</span><span class="p">()</span></code></pre></figure>
+
+<ul>
+  <li>最简单的版本（推荐）：</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">with</span> <span class="nc">A</span><span class="p">()</span> <span class="k">as</span> <span class="n">a</span><span class="p">,</span> <span class="nc">B</span><span class="p">()</span> <span class="k">as</span> <span class="n">b</span><span class="p">:</span>
+	<span class="nf">do_something</span><span class="p">()</span></code></pre></figure>
+
+<h3 id="contextlibclosing">contextlib.closing</h3>
+
+<p>在退出时调用close函数，最常见的例子：</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="n">contextlib</span> <span class="kn">import</span> <span class="n">closing</span>
+<span class="kn">import</span> <span class="n">urllib</span>
+
+<span class="k">with</span> <span class="nf">closing</span><span class="p">(</span><span class="n">urllib</span><span class="p">.</span><span class="nf">urlopen</span><span class="p">(</span><span class="sh">'</span><span class="s">http://www.sogou.com</span><span class="sh">'</span><span class="p">))</span> <span class="k">as</span> <span class="n">page</span><span class="p">:</span>
+	<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">page</span>
+		<span class="k">print</span> <span class="n">line</span></code></pre></figure>
+
+<h2 id="小结">小结</h2>
+
+<ul>
+  <li>with语句可以封装try…except…finally代码，让代码更简洁，更容易复用。</li>
+  <li>contextmanager定义了with语句执行时的上下文。</li>
+  <li>要注意异常的处理方式。</li>
+</ul>
+
+<h2 id="参考资料">参考资料</h2>
+
+<ul>
+  <li>Python文档：<a href="http://docs.python.org/2/reference/compound_stmts.html#with">The with statement</a></li>
+  <li>Python文档：<a href="http://docs.python.org/2/reference/datamodel.html#context-managers">With statement Context Managers</a></li>
+  <li>Python文档：<a href="http://docs.python.org/2/library/contextlib.html">contextlib — Utilities for with-statement contexts</a></li>
+  <li><a href="http://legacy.python.org/dev/peps/pep-0343/">PEP 343 – The “with” Statement</a></li>
+</ul>
+
+  </article>
+</div>
+
+      </div>
+    </div>
+    
+    <footer class="footer">
+  <div id="gotop">^</div>
+  <br>
+	@2015 Pithy Theme by Pawpaw.
+</footer>
+
+    
+  </body>
+
+</html>

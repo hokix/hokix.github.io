@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>    
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width initial-scale=1">
+
+  <title>交叉编译windows版ffmpeg</title>
+  <meta name="description" content="交叉编译windows版ffmpeg">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="/2022/02/27/cross_compile_windows_ffmpeg_on_linux/">
+  <link rel="alternate" type="application/atom+xml" title="Xiao Hui's Blog" href="/feed.xml" />
+  <script src="/scripts/pithy.js" defer></script>
+</head>
+
+
+  <body>
+    <header class="header">
+	<div class="header-container">
+		<div class="nav">
+			
+				<li>
+					<a href="/index.html">home</a>
+				</li>			
+			
+			
+				<li>
+					<a href="/archive/">archive</a>
+				</li>			
+			
+			
+				<li>
+					<a href="/category/">category</a>
+				</li>			
+			
+			
+				<li>
+					<a href="/about/">about</a>
+				</li>			
+			
+		</div>
+		<div class="description"> I'm going to succeed because I'm crazy enough to think I can. </div>		
+		<ul class="social-links">
+			<li>
+				<a href="https://github.com/hokix" title="Github">
+					<img width="19px" height="19px" src="/images/github.png"/>
+				</a>
+			</li>
+			<li>
+				<a href="/feed.xml" title="RSS">
+					<img width="19px" height="19px" src="/images/rss.png"/>
+				</a>
+			</li>
+		</ul>		
+	</div>
+</header>
+
+    <br>
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+  <br>
+  <header class="post-header">
+    <h1 class="post-title">交叉编译windows版ffmpeg</h1>
+    <p class="post-meta">Feb 27, 2022</p>
+  </header>
+
+  <article class="post-content">
+    <p>交叉编译windows版ffmpeg</p>
+
+<p>工具：<a href="https://github.com/rdp/ffmpeg-windows-build-helpers">https://github.com/rdp/ffmpeg-windows-build-helpers</a></p>
+
+<h2 id="准备">准备</h2>
+<ul>
+  <li>linux环境</li>
+  <li>阅读README中的注意事项</li>
+  <li>提示需要约125G磁盘空间，实际编译win32+win64编译器及win64 ffmpeg共使用约10G</li>
+</ul>
+
+<h2 id="参数">参数</h2>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>--compiler-flavors=win64 \
+--ffmpeg-git-checkout=your-git \
+--ffmpeg-git-checkout-version=your-branch \
+--disable-nonfree=n \
+--build-intel-qsv=y \
+--build-x264-with-libav=y
+</code></pre></div></div>
+
+<h2 id="问题">问题</h2>
+<h3 id="freetype-编译错误">freetype 编译错误</h3>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>could not open '/mnt/d/Code/ffmpeg-windows-build-helpers/sandbox/win64/freetype-2.10.4/objs/ftexport.sym' for writing
+</code></pre></div></div>
+<p>参考<a href="https://github.com/rdp/ffmpeg-windows-build-helpers/issues/234">这里</a></p>
+
+<blockquote>
+  <p>The 3rd solution might be passing relative paths to apinames.exe, this is controlled by ‘TOP_DIR’ variable. I commented line #17 of sandbox\win32\freetype-2.10.4\builds\unix\unix-def.in</p>
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#TOP_DIR := $(shell cd $(TOP_DIR); pwd)
+</code></pre></div>  </div>
+</blockquote>
+
+<h3 id="libvmaf-install-model文件提示没有权限">libvmaf install model文件提示没有权限</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Installing subdir /mnt/d/Code/ffmpeg-windows-build-helpers/sandbox/win64/vmaf_git/libvmaf/../model to /mnt/d/Code/ffmpeg-windows-build-helpers/sandbox/cross_compilers/mingw-w64-x86_64/x86_64-w64-mingw32/share/model
+Installation failed due to insufficient permissions.
+Attempting to use polkit to gain elevated privileges...
+Error getting authority: Error initializing authority: Could not connect: No such file or directory
+FAILED: meson-install
+/usr/local/bin/meson install --no-rebuild
+ninja: build stopped: subcommand failed.
+</code></pre></div></div>
+<p>重试、sudo都不行，手动拷贝以后就成功了，可能与wsl有关，具体原因不明：</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cp -r /mnt/d/Code/ffmpeg-windows-build-helpers/sandbox/win64/vmaf_git/libvmaf/../model/* /mnt/d/Code/ffmpeg-windows-build-helpers/sandbox/cross_compilers/mingw-w64-x86_64/x86_64-w64-mingw32/share/model/
+</code></pre></div></div>
+
+<h3 id="不识别的lib">不识别的lib</h3>
+<p>旧版本的ffmpeg不支持部分lib，需要手动去掉</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>--enable-libsvthevc
+--enable-libsvtav1
+</code></pre></div></div>
+
+<h3 id="编译错误的lib">编译错误的lib</h3>
+<p>编译ffmpeg时，可能处于版本原因，以下lib编译不过</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>--enable-libdav1d
+</code></pre></div></div>
+
+  </article>
+</div>
+
+      </div>
+    </div>
+    
+    <footer class="footer">
+  <div id="gotop">^</div>
+  <br>
+	@2015 Pithy Theme by Pawpaw.
+</footer>
+
+    
+  </body>
+
+</html>

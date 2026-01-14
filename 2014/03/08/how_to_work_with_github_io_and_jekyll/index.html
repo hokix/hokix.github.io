@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>    
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width initial-scale=1">
+
+  <title>使用GitHub Pages和Jekyll建网站</title>
+  <meta name="description" content="GitHub Pages是GitHub提供的免费公共站点服务。以下是GitHub的官方简介：">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="/2014/03/08/how_to_work_with_github_io_and_jekyll/">
+  <link rel="alternate" type="application/atom+xml" title="Xiao Hui's Blog" href="/feed.xml" />
+  <script src="/scripts/pithy.js" defer></script>
+</head>
+
+
+  <body>
+    <header class="header">
+	<div class="header-container">
+		<div class="nav">
+			
+				<li>
+					<a href="/index.html">home</a>
+				</li>			
+			
+			
+				<li>
+					<a href="/archive/">archive</a>
+				</li>			
+			
+			
+				<li>
+					<a href="/category/">category</a>
+				</li>			
+			
+			
+				<li>
+					<a href="/about/">about</a>
+				</li>			
+			
+		</div>
+		<div class="description"> I'm going to succeed because I'm crazy enough to think I can. </div>		
+		<ul class="social-links">
+			<li>
+				<a href="https://github.com/hokix" title="Github">
+					<img width="19px" height="19px" src="/images/github.png"/>
+				</a>
+			</li>
+			<li>
+				<a href="/feed.xml" title="RSS">
+					<img width="19px" height="19px" src="/images/rss.png"/>
+				</a>
+			</li>
+		</ul>		
+	</div>
+</header>
+
+    <br>
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+  <br>
+  <header class="post-header">
+    <h1 class="post-title">使用GitHub Pages和Jekyll建网站</h1>
+    <p class="post-meta">Mar 8, 2014</p>
+  </header>
+
+  <article class="post-content">
+    <p><a href="http://pages.github.com">GitHub Pages</a>
+是GitHub提供的免费公共站点服务。以下是GitHub的官方简介：</p>
+
+<blockquote>
+  <h4 id="websites-for-you-and-your-projects">Websites for you and your projects.</h4>
+  <p>Hosted directly from your GitHub repository. Just edit, push, and your changes are live.</p>
+</blockquote>
+
+<p>使用GitHub Pages可以很轻松地为个人、组织或者GitHub项目建一个静态站点。<br />
+只要注册好GitHub账号，就会自动有与用户名相对应的username.github.io主页了。只不过默认是404错误页面而已。只需要创建一个代码仓库（repo），即可将自己的页面放到GitHub上。<br />
+当然啦，你还可以<a href="https://help.github.com/articles/setting-up-a-custom-domain-with-pages">自定义域名</a>。<br />
+使用Jekyll在GitHub上建网站的基本思路是：使用Markdown语言写网页内容，并上传到GitHub的代码仓库中，GitHub使用Jekyll将Markdown文件转换为html，这样网站就可以访问了。</p>
+
+<h2 id="环境搭建">环境搭建</h2>
+
+<p>既然网站保存在GitHub上，安装git当然是必要的了。这里我们使用markdown来写网站正文，因此顺便也安装ruby和Jekyll。如果想自己写html，也可以忽略这两个。</p>
+
+<ul>
+  <li>安装git，各种<a href="https://help.github.com/articles/set-up-git">版本</a>的都木有问题。</li>
+  <li>安装<a href="https://www.ruby-lang.org">ruby</a></li>
+  <li>安装<a href="http://jekyllrb.com/docs/installation/">Jekyll</a><br />
+如果已经装好ruby gem，直接执行<code class="language-plaintext highlighter-rouge">gem install jekyll</code></li>
+  <li>创建你自己的代码仓库（注意分支）</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>URL</th>
+      <th>代码仓库</th>
+      <th>分支</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>username.github.io</td>
+      <td>username.github.io</td>
+      <td>master</td>
+    </tr>
+    <tr>
+      <td>username.github.io/project</td>
+      <td>project</td>
+      <td>gh-pages</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="使用jekyll和markdown">使用Jekyll和Markdown</h2>
+
+<ul>
+  <li>
+    <p>Jekyll基本用法<br />
+将创建好的代码仓库clone到本地。
+使用Jekyll创建一个新的项目： <br />
+<code class="language-plaintext highlighter-rouge">jekyll new repo</code></p>
+  </li>
+  <li>
+    <p>Jekyll<a href="http://jekyllrb.com/docs/structure/">目录结构</a><br />
+_posts文件夹下是网页文件，_layouts文件夹下是网页模板，可以自行修改，_sites文件夹下是Jekyll生成好的网页html文件，css文件夹下的样式文件可以自行修改，网上也提供了很多模板下载。</p>
+  </li>
+  <li>
+    <p>Jekyll提供了一个简单的本地服务器，供测试时使用：<br />
+<code class="language-plaintext highlighter-rouge">jekyll serve</code><br />
+加上-w参数打开调试模式，修改文件时不需要重新自动Jekyll服务器：<br />
+<code class="language-plaintext highlighter-rouge">jekyll serve -w</code><br />
+Jekyll默认的服务器地址是：<code class="language-plaintext highlighter-rouge">0.0.0.0:4000</code>，通过浏览器即可看到Jekyll为你创建的新项目了。</p>
+  </li>
+  <li>
+    <p>Jekyll自定义<br />
+Jekyll支持在网页文件头部增加一些<a href="http://jekyllrb.com/docs/frontmatter/">自定义信息</a>，如模板、标题、时间、分类、tag等等。
+Jekyll同时也提供了一些<a href="http://jekyllrb.com/docs/variables/">变量</a>供模板使用。<br />
+Jekyll<a href="http://jekyllrb.com/docs/configuration/">配置文件</a>是_config.yml。
+Jekyll使用redcarpet作为Markdown解析器默认不支持Markdown语法的表格，可以修改_config.yml，增加如下配置来支持：<br />
+` redcarpet:
+  extensions: [“tables”]<br />
+`</p>
+  </li>
+  <li>
+    <p>关于Markdown<br />
+Markdown是一种纯文本的语言，提供了一些基本的文本格式化的语法，参考<a href="http://www.markdown.cn">这里</a>。<br />
+Markdown语言通过解析器转换为html，Markdown解析器有很多，Jekyll也支持更换其他解析器。<br />
+对于程序员来说，Markdown原生支持代码语法高亮：</p>
+  </li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">print</span> <span class="sh">"</span><span class="s">Hello world</span><span class="sh">"</span></code></pre></figure>
+
+<h2 id="提交代码">提交代码</h2>
+
+<p>站点测试好以后，就可以提交到GitHub上了。只需稍等片刻，即可在github.io上访问到刚才上传的页面了。<br />
+<em>注意：使用Jekyll需要在.gitignore文件中加入_site，避免将本地的站点文件上传到了GitHub上。</em></p>
+
+<h2 id="小结">小结</h2>
+
+<p>在GitHub Pages上建网站虽然看起来是个挺繁琐的过程，但其实一旦把前期的准备搞定了，后面的工作就很轻松了。</p>
+
+<h2 id="参考资料">参考资料</h2>
+
+<ul>
+  <li><a href="https://help.github.com/categories/20/articles">GitHub Pages帮助</a></li>
+  <li><a href="http://jekyllrb.com/docs/quickstart/">Jekyll快速入门</a></li>
+  <li><a href="http://daringfireball.net/projects/markdown/">Markdown主页</a></li>
+  <li>Mac版Markdown编辑工具：<a href="http://mouapp.com">Mou</a></li>
+</ul>
+
+
+  </article>
+</div>
+
+      </div>
+    </div>
+    
+    <footer class="footer">
+  <div id="gotop">^</div>
+  <br>
+	@2015 Pithy Theme by Pawpaw.
+</footer>
+
+    
+  </body>
+
+</html>

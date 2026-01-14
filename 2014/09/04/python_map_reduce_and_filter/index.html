@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>    
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width initial-scale=1">
+
+  <title>Python map/reduce/filter小结</title>
+  <meta name="description" content="python内置了三个非常棒的函数，map、reduce和filter，均用于处理list、tuple和str等可以使用迭代器的数据类型。">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="/2014/09/04/python_map_reduce_and_filter/">
+  <link rel="alternate" type="application/atom+xml" title="Xiao Hui's Blog" href="/feed.xml" />
+  <script src="/scripts/pithy.js" defer></script>
+</head>
+
+
+  <body>
+    <header class="header">
+	<div class="header-container">
+		<div class="nav">
+			
+				<li>
+					<a href="/index.html">home</a>
+				</li>			
+			
+			
+				<li>
+					<a href="/archive/">archive</a>
+				</li>			
+			
+			
+				<li>
+					<a href="/category/">category</a>
+				</li>			
+			
+			
+				<li>
+					<a href="/about/">about</a>
+				</li>			
+			
+		</div>
+		<div class="description"> I'm going to succeed because I'm crazy enough to think I can. </div>		
+		<ul class="social-links">
+			<li>
+				<a href="https://github.com/hokix" title="Github">
+					<img width="19px" height="19px" src="/images/github.png"/>
+				</a>
+			</li>
+			<li>
+				<a href="/feed.xml" title="RSS">
+					<img width="19px" height="19px" src="/images/rss.png"/>
+				</a>
+			</li>
+		</ul>		
+	</div>
+</header>
+
+    <br>
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+  <br>
+  <header class="post-header">
+    <h1 class="post-title">Python map/reduce/filter小结</h1>
+    <p class="post-meta">Sep 4, 2014</p>
+  </header>
+
+  <article class="post-content">
+    <p>python内置了三个非常棒的函数，map、reduce和filter，均用于处理list、tuple和str等可以使用迭代器的数据类型。</p>
+
+<h2 id="map函数">map函数</h2>
+
+<p>map可以根据提供的函数function，顺序处理参数中的sequence。map定义如下：</p>
+<blockquote>
+  <p>map(function, sequence[, sequence, …]) -&gt; list</p>
+</blockquote>
+
+<blockquote>
+  <p>Return a list of the results of applying the function to the items of the argument sequence(s).  If more than one sequence is given, the function is called with an argument list consisting of the corresponding item of each sequence, substituting None for missing values when not all sequences have the same length.  If the function is None, return a list of the items of the sequence (or a list of tuples if more than one sequence).</p>
+</blockquote>
+
+<ul>
+  <li>数字list转字符串list的例子：</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span>
+<span class="nf">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span>
+
+
+<span class="p">[</span><span class="sh">'</span><span class="s">1</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">3</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">5</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">7</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">9</span><span class="sh">'</span><span class="p">]</span></code></pre></figure>
+
+<ul>
+  <li>输入多个list：</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="sh">'</span><span class="s">a</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">b</span><span class="sh">'</span><span class="p">]</span>
+<span class="n">m</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span>
+<span class="n">n</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+<span class="k">def</span> <span class="nf">join_str</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+	<span class="k">return</span> <span class="sh">'</span><span class="s">%s%s</span><span class="sh">'</span> <span class="o">%</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="nf">map</span><span class="p">(</span><span class="n">join_str</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
+<span class="nf">map</span><span class="p">(</span><span class="n">join_str</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+
+<span class="p">[</span><span class="sh">'</span><span class="s">a1</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">b3</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">None5</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">None6</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">None9</span><span class="sh">'</span><span class="p">]</span>
+<span class="p">[</span><span class="sh">'</span><span class="s">10</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">32</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">54</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">76</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">98</span><span class="sh">'</span><span class="p">]</span></code></pre></figure>
+
+<ul>
+  <li>输入函数为None的例子：</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span>
+<span class="n">m</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+<span class="nf">map</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span>
+<span class="nf">map</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
+
+
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">17</span><span class="p">]</span>
+<span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">)]</span></code></pre></figure>
+
+<h2 id="reduce函数">reduce函数</h2>
+
+<p>reduce可以根据提供的函数function，顺序处理参数中的sequence，与map不同的是function每次的输入为上次的结果和下一个元素。默认开始时处理第一个和第二个元素，如果在提供了initial的情况下，开始处理initial和第一个元素。reduce要求function必须接受2个参数，而且reduce不允许输入sequence为空，否则会抛出TypeError异常。reduce定义如下：</p>
+<blockquote>
+  <p>reduce(function, sequence[, initial]) -&gt; value</p>
+
+  <p>Apply a function of two arguments cumulatively to the items of a sequence, from left to right, so as to reduce the sequence to a single value. For example, ((((1+2)+3)+4)+5).  If initial is present, it is placed before the items of the sequence in the calculation, and serves as a default when the sequence is empty.</p>
+</blockquote>
+
+<ul>
+  <li>数组求和的例子</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span>
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+	<span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
+<span class="nf">reduce</span><span class="p">(</span><span class="n">add</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span>
+<span class="nf">reduce</span><span class="p">(</span><span class="n">add</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+
+<span class="mi">25</span>
+<span class="mi">125</span></code></pre></figure>
+
+<h2 id="filter函数">filter函数</h2>
+
+<p>filter可以根据提供的函数function，顺序处理参数中的sequence，并返回function返回True的sequence。让输入sequence为tuple或string时，返回的数据类型仍然为tuple或string。filter定义如下：</p>
+
+<blockquote>
+  <p>filter(function or None, sequence) -&gt; list, tuple, or string</p>
+</blockquote>
+
+<blockquote>
+  <p>Return those items of sequence for which function(item) is true.  If function is None, return the items that are true.  If sequence is a tuple or string, return the same type, else return a list.</p>
+</blockquote>
+
+<ul>
+  <li>求奇数的例子</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<span class="nf">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">%</span> <span class="mi">2</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span>
+
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span></code></pre></figure>
+
+<h2 id="参考资料">参考资料</h2>
+
+<ul>
+  <li>Python文档：<a href="https://docs.python.org/2.7/library/functions.html">Build-in Functions</a></li>
+</ul>
+
+  </article>
+</div>
+
+      </div>
+    </div>
+    
+    <footer class="footer">
+  <div id="gotop">^</div>
+  <br>
+	@2015 Pithy Theme by Pawpaw.
+</footer>
+
+    
+  </body>
+
+</html>

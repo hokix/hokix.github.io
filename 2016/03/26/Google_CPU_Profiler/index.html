@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>    
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width initial-scale=1">
+
+  <title>Google CPU Profiler 学习小结</title>
+  <meta name="description" content="最近在项目中遇到了各种性能瓶颈，如果再不做优化，后续项目就很难进行下去了。于是就找到了Google Profiler，官方文档很简单，不过gperftools用起来确实简单方便。另外文档上说gperftools是多线程友好的，但我未对比测试gperftools分析单线程和多线程程序的效果。">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="/2016/03/26/Google_CPU_Profiler/">
+  <link rel="alternate" type="application/atom+xml" title="Xiao Hui's Blog" href="/feed.xml" />
+  <script src="/scripts/pithy.js" defer></script>
+</head>
+
+
+  <body>
+    <header class="header">
+	<div class="header-container">
+		<div class="nav">
+			
+				<li>
+					<a href="/index.html">home</a>
+				</li>			
+			
+			
+				<li>
+					<a href="/archive/">archive</a>
+				</li>			
+			
+			
+				<li>
+					<a href="/category/">category</a>
+				</li>			
+			
+			
+				<li>
+					<a href="/about/">about</a>
+				</li>			
+			
+		</div>
+		<div class="description"> I'm going to succeed because I'm crazy enough to think I can. </div>		
+		<ul class="social-links">
+			<li>
+				<a href="https://github.com/hokix" title="Github">
+					<img width="19px" height="19px" src="/images/github.png"/>
+				</a>
+			</li>
+			<li>
+				<a href="/feed.xml" title="RSS">
+					<img width="19px" height="19px" src="/images/rss.png"/>
+				</a>
+			</li>
+		</ul>		
+	</div>
+</header>
+
+    <br>
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+  <br>
+  <header class="post-header">
+    <h1 class="post-title">Google CPU Profiler 学习小结</h1>
+    <p class="post-meta">Mar 26, 2016</p>
+  </header>
+
+  <article class="post-content">
+    <p>最近在项目中遇到了各种性能瓶颈，如果再不做优化，后续项目就很难进行下去了。于是就找到了Google Profiler，官方文档很简单，不过gperftools用起来确实简单方便。另外文档上说gperftools是多线程友好的，但我未对比测试gperftools分析单线程和多线程程序的效果。</p>
+
+<h2 id="简介">简介</h2>
+
+<p>gperftools全称Google Performance Tools，此项目可以分为四个部分：</p>
+
+<ol>
+  <li>tcmalloc</li>
+  <li>heap-checker</li>
+  <li>heap-profiler</li>
+  <li>cpu-profiler</li>
+</ol>
+
+<p>这里主要总结一下cpu-profiler的用法。cpu-profiler可以对CPU时间片的使用进行分析计数，并提供了将分析结果转换为可视化文档的工具。</p>
+
+<h2 id="安装gperftools">安装gperftools</h2>
+
+<p>gperftoolf目前托管在github上，因此可以很方便的获取到<a href="https://github.com/gperftools/gperftools/releases">源码</a>，直接编译安装就好了。</p>
+
+<h2 id="使用cpu-profiler">使用cpu-profiler</h2>
+
+<p>简单来说，使用cpu-profiler一共只有三个步骤：</p>
+
+<ol>
+  <li>编译链接</li>
+  <li>运行并生成剖析结果</li>
+  <li>剖析结果格式转换</li>
+</ol>
+
+<p>下面就具体说一下每一个步骤的使用方法。</p>
+
+<h2 id="编译链接">编译链接</h2>
+
+<p>安装好以后，就可以在目标程序编译的时候，根据需要链接libprofiler.so或者libprofiler.a了。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-L/usr/lib -lprofiler
+</code></pre></div></div>
+
+<p>或者在运行时通过设置环境变量来实现动态链接（不推荐）。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>env LD_PRELOAD="/usr/lib/libprofiler.so" &lt;binary&gt;
+</code></pre></div></div>
+
+<h2 id="运行并生成剖析结果">运行并生成剖析结果</h2>
+
+<p>运行的方法有几种：</p>
+
+<ol>
+  <li>
+    <p>设置环境变量+发信号</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> %env CPUPROFILE=chrome.prof CPUPROFILESIGNAL=12 /bin/chrome &amp;
+</code></pre></div>    </div>
+
+    <p>开始和结束并通过向程序发送上面定义的信号12：</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> killall -12 chrome
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>gdb中断点+调用<code>ProfilerStart()</code>和<code>ProfilerStop()</code></p>
+
+    <p>具体用法可以查看参考资料<a href="http://www.ibm.com/developerworks/cn/linux/l-cn-googleperf/">使用google-preftools剖析程序性能瓶颈</a></p>
+  </li>
+  <li>
+    <p>代码中调用<code>ProfilerStart()</code>和<code>ProfilerStop()</code></p>
+
+    <p>需要引入头文件<code>gperftools/profiler.h</code>，同时<code>ProfilerStart()</code>的参数为生成剖析结果的文件名。</p>
+  </li>
+</ol>
+
+<p>更多高级用法，可以参考<code>gperftools/profiler.h</code>中定义的<code>ProfilerFlush()</code>和<code>ProfilerStartWithOptions()</code>。</p>
+
+<h2 id="剖析结果格式转换">剖析结果格式转换</h2>
+
+<p>格式转换使用gproftools里提供的<code>pprof</code>工具。同时转换成调用关系图需要用到<code>graphviz</code>库中的<code>dot</code>程序，转成pdf需要依赖<code>gv</code>或者<code>ps2pdf</code>。如果转换失败，就按照错误日志安装需要的库就行了。
+常用的几种格式如下，其余可以参考<code>pprof -h</code>：</p>
+
+<ol>
+  <li>
+    <p>text</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> pprof --text /bin/ls ls.prof
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>pdf</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> pprof --gv /bin/ls ls.prof &gt; ls.pdf
+</code></pre></div>    </div>
+
+    <p>或者</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> pprof --pdf /bin/ls ls.porf &gt; ls.pdf
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p>如果是转成纯文本，转换好以后格式如下：</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>14	2.1%	17.2%	58	8.7%	std::_Rb_tree::find
+</code></pre></div></div>
+
+<p>每一列的含义分别为：</p>
+
+<ol>
+  <li>函数的采样次数</li>
+  <li>函数的采样百分比</li>
+  <li>截止到当前所有函数的采样百分比</li>
+  <li>该函数调用的所有函数的采样次数</li>
+  <li>该函数调用的所有函数的采样百分比</li>
+  <li>函数名</li>
+</ol>
+
+<p>如果转成pdf或者图片，转换好以后的效果图如下(源自gperftools帮助文档)，分为结点、边、元信息：</p>
+
+<p><img src="/images/pprof-test.gif" alt="image" /></p>
+
+<p>每个结点分为四个部分：</p>
+
+<ol>
+  <li>类名</li>
+  <li>函数名</li>
+  <li>采样次数（百分比）</li>
+  <li>整体采样次数（百分比）</li>
+</ol>
+
+<p>比如说，上图中的test_main_thread函数，共采样到200次，其中155次是在执行该函数，其他45次是在执行其调用的其他函数。</p>
+
+<p>每条边代表调用的函数，边上的数字代表调用函数的次数。</p>
+
+<p>还有其他更多高级功能，结点或边被删除的采样次数下界，只绘制部分函数的结果<code>--focus</code>和<code>--ignore</code>等。</p>
+
+<h2 id="参考资料">参考资料</h2>
+
+<ul>
+  <li><a href="http://www.ibm.com/developerworks/cn/linux/l-cn-googleperf/">使用google-preftools剖析程序性能瓶颈</a></li>
+  <li><a href="https://github.com/gperftools/gperftools/wiki">gperftools github wiki</a></li>
+</ul>
+
+  </article>
+</div>
+
+      </div>
+    </div>
+    
+    <footer class="footer">
+  <div id="gotop">^</div>
+  <br>
+	@2015 Pithy Theme by Pawpaw.
+</footer>
+
+    
+  </body>
+
+</html>
