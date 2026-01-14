@@ -6,7 +6,6 @@ A personal technical blog powered by Jekyll and GitHub Pages, featuring articles
 
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-success)](https://hokix.github.io)
 [![Jekyll](https://img.shields.io/badge/Jekyll-4.4.1-red)](https://jekyllrb.com/)
-[![Deploy Status](https://github.com/hokix/hokix.github.io/actions/workflows/jekyll.yml/badge.svg)](https://github.com/hokix/hokix.github.io/actions/workflows/jekyll.yml)
 
 ## 🌐 Visit
 
@@ -26,7 +25,7 @@ This blog contains technical articles covering:
 - **Static Site Generator**: Jekyll 4.4.1
 - **Theme**: [jekyll-theme-cayman](https://github.com/pages-themes/cayman)
 - **Hosting**: GitHub Pages
-- **CI/CD**: GitHub Actions (automated deployment)
+- **Deployment**: gh-pages branch
 - **Syntax Highlighting**: Rouge
 - **Markdown**: Kramdown with GFM parser
 
@@ -84,7 +83,6 @@ EOF
 ├── css/                 # Compiled CSS
 ├── images/              # Image assets
 ├── .github/
-│   ├── workflows/       # GitHub Actions CI/CD
 │   └── dependabot.yml   # Dependency updates config
 ├── Gemfile              # Ruby dependencies
 └── index.html           # Homepage
@@ -92,13 +90,13 @@ EOF
 
 ## 🔄 Deployment
 
-This blog uses **GitHub Actions** for automatic deployment:
+This blog is deployed to GitHub Pages from the **gh-pages branch**:
 
-1. Push to `master` branch
-2. GitHub Actions builds the site with Jekyll
-3. Deploys to GitHub Pages automatically
+1. Build the site locally: `bundle exec jekyll build`
+2. Push the built site to the `gh-pages` branch
+3. GitHub Pages serves the site automatically
 
-**Manual deployment** is no longer needed!
+Configure in repository Settings → Pages → Source → Deploy from branch → `gh-pages`
 
 ## 🔧 Configuration
 
